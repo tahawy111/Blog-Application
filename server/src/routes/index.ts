@@ -1,5 +1,6 @@
-export default function (app: any) {
-  app.get("/test", (req: any, res: any) => {
-    res.send("Hello With Test");
-  });
+import { Express } from "express";
+import auth from "./auth";
+
+export default function (app: Express) {
+  app.use("/api", auth);
 }
