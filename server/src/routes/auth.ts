@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { register } from "../controllers/authCtrl";
-import { validRegister } from "../middleware/valid";
+import { validRegister } from "../middlewares/valid";
 
 const router = Router();
 
