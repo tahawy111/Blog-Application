@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { generateActiveToken } from "./../config/generateToken";
 import sendMail from "./../config/sendMail";
 import { validEmail } from "./../middlewares/valid";
+import jwt from "jsonwebtoken";
 
 const CLIENT_URL = `${process.env.BASE_URL}`;
 
@@ -54,4 +55,14 @@ export const register = async (req: Request, res: Response) => {
     console.log(error);
     return res.status(500).json({ msg: "Error occured Register" });
   }
+};
+
+export const activeAccount = async (req: Request, res: Response) => {
+  try {
+    const { active_token } = req.body;
+    const decoded = jwt.verify(
+      active_token,
+      `${process.env.ACTIVE_TOKEN_SECRET}`
+    );
+  } catch (error) {}
 };
