@@ -23,7 +23,7 @@ export const register = async (req: Request, res: Response) => {
     const SENDER_MAIL = `${process.env.SENDER_EMAIL_ADDRESS}`;
     const txt = "Verify Your Email Address";
     const mailOptions = {
-      from: SENDER_MAIL,
+      from: '"BlogDev Verify Email" <amer.vib582@gmail.com>',
       to: account,
       subject: "BlogDev",
       html: `
@@ -64,5 +64,6 @@ export const activeAccount = async (req: Request, res: Response) => {
       active_token,
       `${process.env.ACTIVE_TOKEN_SECRET}`
     );
+    console.log(decoded);
   } catch (error) {}
 };
