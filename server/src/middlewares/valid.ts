@@ -6,14 +6,19 @@ export const validRegister = async (
   next: NextFunction
 ) => {
   const { name, account, password } = req.body;
+  if (!name || !account || !password)
+    return res.status(400).json({ msg: "Please fill inputs!" });
   const errors: string[] = [];
   if (!name) errors.push("Please add your name!");
-  else if (name.length > 20) {
+  if (name.length > 20) {
     errors.push("Your name is up to 20 chars long.");
   }
   if (!account) errors.push("Please add your email or phone number!");
-  else if (!validPhone(account) && !validEmail(account)) {
+  if (!validPhone(account) && !validEmail(account)) {
     errors.push("Email or phone number format is incorrect.");
+  }
+  if (!password) {
+    errors.push("Please add your password!");
   }
   if (password.length < 6) {
     errors.push("Password must be at least 6 chars.");

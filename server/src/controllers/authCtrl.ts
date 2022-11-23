@@ -5,6 +5,7 @@ import { generateActiveToken } from "./../config/generateToken";
 import sendMail from "./../config/sendMail";
 import { validEmail } from "./../middlewares/valid";
 import jwt from "jsonwebtoken";
+import { IToken } from "./../config/interface";
 
 const CLIENT_URL = `${process.env.BASE_URL}`;
 
@@ -18,7 +19,7 @@ export const register = async (req: Request, res: Response) => {
         .json({ msg: "Email or phone number already exists." });
     const hashedPassword = bcrypt.hashSync(password, 12);
     const newUser = { name, account, password: hashedPassword };
-    const active_token = generateActiveToken(newUser);
+    const active_token = generateActiveToken({ newUser });
     const url = `${CLIENT_URL}/active/${active_token}`;
     const SENDER_MAIL = `${process.env.SENDER_EMAIL_ADDRESS}`;
     const txt = "Verify Your Email Address";
@@ -60,10 +61,25 @@ export const register = async (req: Request, res: Response) => {
 export const activeAccount = async (req: Request, res: Response) => {
   try {
     const { active_token } = req.body;
-    const decoded = jwt.verify(
-      active_token,
-      `${process.env.ACTIVE_TOKEN_SECRET}`
+    if (!active_token)
+      return res.status(403).json({ msg: "Please add your token!" });
+    const decoded = <IToken>(
+      jwt.verify(active_token, `${process.env.ACTIVE_TOKEN_SECRET}`)
     );
-    console.log(decoded);
-  } catch (error) {}
+    const { newUser } = decoded;
+    if (!newUser)
+      return res.status(400).json({ msg: "Invalid authentication" });
+
+    const user = new User(newUser);
+    await user.save();
+
+    return res.status(201).json({ msg: "Account has been activated!" });
+  } catch (error: any) {
+    if (error.code === 11000)
+      return res.status(403).json({ msg: "Account is already exist!" });
+    if (error.name === "TokenExpiredError")
+      return res
+        .status(403)
+        .json({ msg: "Token is expired please try again!" });
+  }
 };
