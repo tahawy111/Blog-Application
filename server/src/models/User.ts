@@ -26,11 +26,11 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "user", // admin
+      default: "user", // login
     },
     type: {
       type: String,
-      default: "normal", // fast
+      default: "register", // fast
     },
   },
   {

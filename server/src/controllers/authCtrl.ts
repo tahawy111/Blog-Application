@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
-import { generateActiveToken } from "./../config/generateToken";
+import {
+  generateAccessToken,
+  generateActiveToken,
+  generateRefreshToken,
+} from "./../config/generateToken";
 import sendMail from "./../config/sendMail";
 import { validEmail } from "./../middlewares/valid";
 import jwt from "jsonwebtoken";
-import { IToken } from "./../config/interface";
+import { IToken, IUser } from "./../config/interface";
 
 const CLIENT_URL = `${process.env.BASE_URL}`;
 
@@ -81,5 +85,58 @@ export const activeAccount = async (req: Request, res: Response) => {
       return res
         .status(403)
         .json({ msg: "Token is expired please try again!" });
+  }
+};
+export const login = async (req: Request, res: Response) => {
+  const { account, password } = req.body;
+  const user: IUser | null = await User.findOne({ account });
+  if (!user) return res.status(404).json({ msg: "This user does not exists!" });
+
+  // if User exists
+  loginUser(user, password, res);
+};
+
+const loginUser = (user: IUser, passwordC: string, res: Response) => {
+  const isMatch: boolean = bcrypt.compareSync(passwordC, user.password);
+
+  if (!isMatch) return res.status(403).json({ msg: "password is incorrect" });
+  const access_token = generateAccessToken({ id: user._id });
+  const refresh_token = generateRefreshToken({ id: user._id });
+  const { password, ...userR } = user;
+  res.cookie("refreshtoken", refresh_token, {
+    httpOnly: true,
+    path: `/api/refresh_token`,
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  });
+  res.json({ msg: "Login success!", access_token, user: userR._doc });
+};
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("refreshtoken", { path: "/api/refresh_token" });
+    res.json({ msg: "Logged out" });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+};
+
+export const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const rf_token = req.cookies.refreshtoken;
+    if (!rf_token) return res.status(400).json({ msg: "Please login now!" });
+    const decoded = <IToken>(
+      jwt.verify(rf_token, `${process.env.REFRESH_TOKEN_SECRET}`)
+    );
+    if (!decoded) return res.status(400).json({ msg: "Please login now!" });
+
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user)
+      return res.status(400).json({ msg: "This account does not exists." });
+
+    const access_token = generateAccessToken({ id: user._id });
+
+    res.json({ access_token });
+  } catch (error) {
+    return res.status(400).json({ error });
   }
 };
