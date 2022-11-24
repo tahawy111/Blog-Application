@@ -3,12 +3,12 @@ import React from "react";
 const NotFound = () => {
   return (
     <h1
+      className="text-secondary"
       style={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         height: "calc(100vh - 70px)",
-        color: "#6c757d",
       }}
     >
       404 | Not Found
