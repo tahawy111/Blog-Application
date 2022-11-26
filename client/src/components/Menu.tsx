@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { Nav, NavDropdown } from "react-bootstrap";
 
 const Menu = () => {
   const loginLinks = [
@@ -10,38 +11,19 @@ const Menu = () => {
     <div>
       <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
         {loginLinks.map((link, index) => (
-          <li className="nav-item" key={index}>
-            <Link className="nav-link" to={link.path}>
-              {link.label}
-            </Link>
-          </li>
+          <Nav.Link key={index}>
+            <NavLink to={link.path}>{link.label}</NavLink>
+          </Nav.Link>
         ))}
-        <li className="nav-item dropdown">
-          <Link
-            className="nav-link dropdown-toggle"
-            to="/"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            UserName
-          </Link>
-          <ul className="dropdown-menu">
-            <li>
-              <Link className="dropdown-item" to="/profile">
-                Profile
-              </Link>
-            </li>
-            <li>
-              <hr className="dropdown-divider" />
-            </li>
-            <li>
-              <Link className="dropdown-item" to="/">
-                Logout
-              </Link>
-            </li>
-          </ul>
-        </li>
+        <NavDropdown title="UserName" id="basic-nav-dropdown">
+          <NavDropdown.Item>
+            <Link to="/ptofile">Progile</Link>
+          </NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item>
+            <Link to="/logout">Logout</Link>
+          </NavDropdown.Item>
+        </NavDropdown>
       </ul>
     </div>
   );

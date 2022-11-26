@@ -10,7 +10,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="container">
       <Header />
-      {children}
+      <div style={{ height: "calc(100vh - 195px)" }}> {children}</div>
       <Footer />
     </div>
   );
