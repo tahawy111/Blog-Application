@@ -1,19 +1,30 @@
 import React, { useState } from "react";
-import { InputChange } from "../utils/TypeScript";
+import { IFormEvent, InputChange } from "../utils/TypeScript";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
+import { login } from "../slices/authSlice";
 
+export interface IUserLogin {
+  account: string;
+  password: string;
+}
 const LoginPass = () => {
   const [userLogin, setUserLogin] = useState({ account: "", password: "" });
   const { account, password } = userLogin;
-
+  const dispatch = useDispatch<AppDispatch>();
   const [typePass, setTypePass] = useState(false);
 
   const handleChangeInput = (e: InputChange) => {
     const { value, name } = e.target;
     setUserLogin({ ...userLogin, [name]: value });
   };
+  const submitHandler = (e: IFormEvent) => {
+    e.preventDefault();
 
+    dispatch(login(userLogin));
+  };
   return (
-    <form>
+    <form onSubmit={submitHandler}>
       <div className="form-group mb-3">
         <label htmlFor="account" className="form-label">
           Email / Phone number
