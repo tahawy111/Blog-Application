@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axiosIntance from "./../utils/axios";
 import { IUserLogin } from "../components/LoginPass";
+import { toast } from "react-toastify";
+import { IUserRegister } from "./../components/RegisterForm";
 
 export interface AuthState {
   loading: boolean;
@@ -22,10 +24,28 @@ export const login = createAsyncThunk(
       );
     } catch (error: any) {
       const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const register = createAsyncThunk(
+  "auth/register",
+  async (user: IUserRegister, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.post("/register", user)
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
         error.toString();
 
       return thunkAPI.rejectWithValue(message);
@@ -56,50 +76,52 @@ export const authSlice = createSlice({
       };
     },
   },
-  // extraReducers: {
-  //   [login.pending.toString()]: (state: AuthState) => {
-  //     return { ...state, loading: true };
-  //   },
-  //   [login.fulfilled.toString()]: (state: AuthState, action: PayloadAction) => {
-  //     localStorage.user = JSON.stringify(action.payload);
-  //     return {
-  //       ...state,
-  //       loading: false,
-  //       isSuccess: true,
-  //       user: action.payload,
-  //     };
-  //   },
-  //   [login.rejected.toString()]: (state: AuthState, action: PayloadAction) => {
-  //     return {
-  //       ...state,
-  //       loading: false,
-  //       isSuccess: true,
-  //       message: action.payload,
-  //       user: null,
-  //     };
-  //   },
-  // },
 
   extraReducers: (builder: any) => {
     builder.addCase(login.pending, (state: AuthState) => {
       return { ...state, loading: true };
     });
+    builder.addCase(login.fulfilled, (state: AuthState, action: any) => {
+      localStorage.user = JSON.stringify(action.payload);
+      toast.success(`${action.payload.msg}`);
+      return {
+        ...state,
+        loading: false,
+        isSuccess: true,
+        user: action.payload,
+      };
+    });
     builder.addCase(
-      login.fulfilled,
+      login.rejected,
       (state: AuthState, action: PayloadAction) => {
-        localStorage.user = JSON.stringify(action.payload);
+        toast.error(`${action.payload}`);
         return {
           ...state,
           loading: false,
           isSuccess: true,
-          user: action.payload,
+          message: action.payload,
+          user: null,
         };
       }
     );
+    builder.addCase(register.pending, (state: AuthState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(register.fulfilled, (state: AuthState, action: any) => {
+      localStorage.user = JSON.stringify(action.payload);
+      toast.success(`${action.payload.msg}`);
+      return {
+        ...state,
+        loading: false,
+        isSuccess: true,
+        user: action.payload,
+      };
+    });
 
     builder.addCase(
-      login.rejected,
+      register.rejected,
       (state: AuthState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
         return {
           ...state,
           loading: false,

@@ -5,14 +5,13 @@ import Register from "./pages/register/Register";
 import Login from "./pages/login/Login";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/home/Home";
-import { toast } from "react-toastify";
 // import { useDispatch, useSelector } from "react-redux";
 // import { RootState } from "./store";
 
 function App() {
   // const dispatch = useDispatch();
   // const number = useSelector((state: RootState) => state.counter.value);
-  const myToast = () => toast.success("Hello");
+
   return (
     <Routes>
       <Route path="/">

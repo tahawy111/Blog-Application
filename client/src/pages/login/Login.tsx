@@ -9,7 +9,6 @@ import Loading from "../../components/Loading";
 
 const Login = () => {
   const user = useSelector((state: RootState) => state.auth);
-
   return (
     <Layout>
       {user.loading ? (
