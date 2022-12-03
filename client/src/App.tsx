@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 function App() {
   // const dispatch = useDispatch();
   // const number = useSelector((state: RootState) => state.counter.value);
-  const myToast = toast.success("Hello");
+  const myToast = () => toast.success("Hello");
   return (
     <Routes>
       <Route path="/">
