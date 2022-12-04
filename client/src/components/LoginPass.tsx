@@ -3,12 +3,14 @@ import { IFormEvent, InputChange } from "../utils/TypeScript";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import { login } from "../slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export interface IUserLogin {
   account: string;
   password: string;
 }
 const LoginPass = () => {
+  const navigate = useNavigate();
   const [userLogin, setUserLogin] = useState({ account: "", password: "" });
   const { account, password } = userLogin;
   const dispatch = useDispatch<AppDispatch>();
@@ -21,7 +23,9 @@ const LoginPass = () => {
   const submitHandler = (e: IFormEvent) => {
     e.preventDefault();
 
-    dispatch(login(userLogin));
+    dispatch(login(userLogin)).then(() => {
+      navigate("/");
+    });
   };
   return (
     <form onSubmit={submitHandler}>

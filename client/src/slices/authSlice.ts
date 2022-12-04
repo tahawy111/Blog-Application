@@ -75,6 +75,18 @@ export const authSlice = createSlice({
         user: null,
       };
     },
+    logout: (state) => {
+      localStorage.removeItem("user");
+      toast.success("You Logged Out Succcessfully");
+      return {
+        ...state,
+        loading: false,
+        isSuccess: false,
+        isError: false,
+        message: "",
+        user: null,
+      };
+    },
   },
 
   extraReducers: (builder: any) => {
@@ -135,6 +147,6 @@ export const authSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { reset } = authSlice.actions;
+export const { reset, logout } = authSlice.actions;
 
 export default authSlice.reducer;
