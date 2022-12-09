@@ -7,6 +7,7 @@ import Home from "./pages/home/Home";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import { gapi } from "gapi-script";
+import Profile from "./pages/profile/Profile";
 
 function App() {
   // const dispatch = useDispatch();
@@ -25,13 +26,19 @@ function App() {
           index
           element={auth.user ? <Home /> : <Navigate to="/login" />}
         />
+        {/* Start Auth Routes */}
         <Route
           path="login"
-          element={auth.user ? <Navigate to="/login" /> : <Login />}
+          element={auth.user ? <Navigate to="/" /> : <Login />}
         />
         <Route
           path="register"
-          element={auth.user ? <Navigate to="/login" /> : <Register />}
+          element={auth.user ? <Navigate to="/" /> : <Register />}
+        />
+        {/* End Auth Routes */}
+        <Route
+          path="profile"
+          element={auth.user ? <Profile /> : <Navigate to="/login" />}
         />
       </Route>
       <Route path="*" element={<NotFound />} />

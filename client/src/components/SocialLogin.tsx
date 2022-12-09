@@ -40,7 +40,7 @@ const SocialLogin = () => {
             border: "none",
             borderRadius: "5px",
           }}
-          appId="1280531022486500"
+          appId={`${process.env.REACT_APP_FACEBOOK_CLIENT_ID}`}
           onSuccess={onFBSuccess}
           onFail={(error) => {
             console.log("Login Failed!", error);
