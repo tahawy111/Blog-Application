@@ -5,6 +5,7 @@ import {
   login,
   logout,
   refreshToken,
+  googleLogin,
 } from "../controllers/authCtrl";
 import { validRegister } from "../middlewares/valid";
 
@@ -15,5 +16,6 @@ router.post("/active", activeAccount);
 router.post("/login", login);
 router.get("/logout", logout);
 router.get("/refresh_token", refreshToken);
+router.post("/google_login", googleLogin);
 
 export default router;

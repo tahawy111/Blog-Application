@@ -53,6 +53,26 @@ export const register = createAsyncThunk(
   }
 );
 
+export const googleLogin = createAsyncThunk(
+  "auth/googleLogin",
+  async (id_token: string, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.post("/google_login", { id_token })
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const initialState: AuthState = {
   loading: false,
   isSuccess: localStorage.user ? true : false,
@@ -116,6 +136,7 @@ export const authSlice = createSlice({
         };
       }
     );
+
     builder.addCase(register.pending, (state: AuthState) => {
       return { ...state, loading: true };
     });
@@ -132,6 +153,32 @@ export const authSlice = createSlice({
 
     builder.addCase(
       register.rejected,
+      (state: AuthState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          message: action.payload,
+          user: null,
+        };
+      }
+    );
+    builder.addCase(googleLogin.pending, (state: AuthState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(googleLogin.fulfilled, (state: AuthState, action: any) => {
+      localStorage.user = JSON.stringify(action.payload);
+      toast.success(`${action.payload.msg}`);
+      return {
+        ...state,
+        loading: false,
+        isSuccess: true,
+        user: action.payload,
+      };
+    });
+    builder.addCase(
+      googleLogin.rejected,
       (state: AuthState, action: PayloadAction) => {
         toast.error(`${action.payload}`);
         return {

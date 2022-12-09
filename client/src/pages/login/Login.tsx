@@ -6,9 +6,11 @@ import "./login.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import Loading from "../../components/Loading";
+import SocialLogin from "../../components/SocialLogin";
 
 const Login = () => {
   const user = useSelector((state: RootState) => state.auth);
+
   return (
     <Layout>
       {user.loading ? (
@@ -17,7 +19,7 @@ const Login = () => {
         <div className="auth_page">
           <div className="auth_box">
             <h3 className="text-uppercase text-center mb-4">Login</h3>
-
+            <SocialLogin />
             <LoginPass />
 
             <small
