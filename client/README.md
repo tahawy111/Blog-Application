@@ -1,48 +1,85 @@
-# Getting Started with Create React App
+![Express Test Image](https://camo.githubusercontent.com/0566752248b4b31b2c4bdc583404e41066bd0b6726f310b73e1140deefcc31ac/68747470733a2f2f692e636c6f756475702e636f6d2f7a6659366c4c376546612d3330303078333030302e706e67)
 
-### [this is the playlist](https://www.youtube.com/playlist?list=PLs4co9a6NhMw7xB4xPSkSQRM8uQVAZak6)
+# <!-- Title --> React Google Login Lite
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> <!-- Description --> A Google oAUth Sign-in / Log-in Component for React
 
-## Available Scripts
+# Install
 
-In the project directory, you can run:
+`npm install react-google-login-lite`
 
-### `npm start`
+# How to use
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```jsx
+import GoogleLogin from "react-google-login-lite";
+// or
+import { GoogleLogin } from "react-google-login-lite";
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+const onSuccess = (googleUser) => {
+  console.log(googleUser);
+};
 
-### `npm test`
+const onFailure = (err) => {
+  console.log(err);
+};
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+//or typescript
+const onSuccess = (googleUser: GoogleLoginResponse) => {
+  console.log(googleUser);
+};
 
-### `npm run build`
+const onFailure = (err: any) => {
+  console.log(err);
+};
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+ReactDOM.render(
+  <GoogleLogin
+    client_id="your-google-client-id"
+    cookiepolicy="single_host_origin"
+    onSuccess={onSuccess}
+    onFailure={onFailure}
+  />,
+  document.getElementById("root")
+);
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Stay Logged in
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`isSignedIn={true}` attribute will call `onSuccess` callback on load to keep the user signed in.
 
-### `npm run eject`
+```jsx
+<GoogleLogin
+  client_id="your-google-client-id"
+  cookiepolicy="single_host_origin"
+  onSuccess={onSuccess}
+  onFailure={onFailure}
+  isSignedIn={true}
+/>
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+# onSuccess callback
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. In the onSuccess(googleUser) {...} callback function, you can use:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   - googleUser.getId()
+   - googleUser.getBasicProfile()
+   - You should get back a standard JWT located at googleUser.getAuthResponse().id_token
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1. Send this id_token to your server
+1. Have your server decode the id_token by using a common JWT library such as [google-auth-library](https://www.npmjs.com/package/google-auth-library) or by sending a GET request to `https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=YOUR_TOKEN_HERE`
 
-## Learn More
+   - https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=YOUR_TOKEN_HERE
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Login Props
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<!-- Tables -->
+
+| Property | Value  |
+| -------- | ------ |
+| Name     | `Amer` |
+| age      | `17`   |
+
+<!-- Task -->
+
+- [ ] Task
+- [x] Task 2
