@@ -1,32 +1,55 @@
-import { GoogleLogin, GoogleLoginResponse } from "react-google-login-lite";
 import { useDispatch } from "react-redux";
-import { googleLogin } from "../slices/authSlice";
+import { googleLogin, facebookLogin } from "../slices/authSlice";
 import { AppDispatch } from "../store";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "@greatsumini/react-facebook-login";
 
 const SocialLogin = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const onSuccess = (googleUser: GoogleLoginResponse) => {
-    const id_token = googleUser.getAuthResponse().id_token;
-    console.log(id_token);
-    dispatch(googleLogin(id_token)).then(() => {
+  const onSuccess = (credentialResponse: any) => {
+    dispatch(googleLogin(credentialResponse.credential)).then(() => {
+      navigate("/");
+    });
+  };
+  const onFBSuccess = (response: any) => {
+    const { accessToken, userID } = response;
+    dispatch(facebookLogin({ accessToken, userID })).then(() => {
       navigate("/");
     });
   };
 
-  const onFailure = (err: any) => {
-    console.log(err);
-  };
   return (
     <div>
-      <GoogleLogin
-        client_id={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
-        cookiepolicy="single_host_origin"
-        onSuccess={onSuccess}
-        onFailure={onFailure}
-        isSignedIn={false}
-      />
+      <div className="d-flex align-items-center flex-column">
+        <GoogleLogin
+          useOneTap
+          onSuccess={onSuccess}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+        />
+
+        <FacebookLogin
+          style={{
+            backgroundColor: "#4267b2",
+            color: "#fff",
+            fontSize: "16px",
+            padding: "7px 44px",
+            border: "none",
+            borderRadius: "5px",
+          }}
+          appId="1280531022486500"
+          onSuccess={onFBSuccess}
+          onFail={(error) => {
+            console.log("Login Failed!", error);
+          }}
+          onProfileSuccess={(response) => {
+            console.log("Get Profile Success!", response);
+          }}
+        />
+      </div>
     </div>
   );
 };

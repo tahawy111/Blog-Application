@@ -28,10 +28,10 @@ export interface IGgPayload {
   name: string;
   picture: string;
 }
-export interface IUserParams {
+export type IUserParams = {
   name: string;
   account: string;
   password: string;
   avatar?: string;
   type: string;
-}
+};

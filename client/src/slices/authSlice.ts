@@ -4,6 +4,7 @@ import axiosIntance from "./../utils/axios";
 import { IUserLogin } from "../components/LoginPass";
 import { toast } from "react-toastify";
 import { IUserRegister } from "./../components/RegisterForm";
+import { IFacebookLoginPayload } from "../utils/TypeScript";
 
 export interface AuthState {
   loading: boolean;
@@ -72,6 +73,25 @@ export const googleLogin = createAsyncThunk(
     }
   }
 );
+export const facebookLogin = createAsyncThunk(
+  "auth/facebookLogin",
+  async (payload: IFacebookLoginPayload, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.post("/facebook_login", payload)
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const initialState: AuthState = {
   loading: false,
@@ -93,6 +113,12 @@ export const authSlice = createSlice({
         isError: false,
         message: "",
         user: null,
+      };
+    },
+    loading: (state) => {
+      return {
+        ...state,
+        loading: true,
       };
     },
     logout: (state) => {
@@ -190,10 +216,39 @@ export const authSlice = createSlice({
         };
       }
     );
+    builder.addCase(facebookLogin.pending, (state: AuthState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(
+      facebookLogin.fulfilled,
+      (state: AuthState, action: any) => {
+        localStorage.user = JSON.stringify(action.payload);
+        toast.success(`${action.payload.msg}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          user: action.payload,
+        };
+      }
+    );
+    builder.addCase(
+      facebookLogin.rejected,
+      (state: AuthState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          message: action.payload,
+          user: null,
+        };
+      }
+    );
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { reset, logout } = authSlice.actions;
+export const { reset, logout, loading } = authSlice.actions;
 
 export default authSlice.reducer;
