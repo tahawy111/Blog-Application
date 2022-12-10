@@ -6,18 +6,18 @@ import NotFound from "./pages/NotFound";
 import Home from "./pages/home/Home";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
-import { gapi } from "gapi-script";
+// import { gapi } from "gapi-script";
 import Profile from "./pages/profile/Profile";
 
 function App() {
   // const dispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
-  gapi.load("client:auth2", () => {
-    gapi.client.init({
-      clientId: `${process.env.REACT_APP_GOOGLE_CLIENT_ID}`,
-      plugin_name: "blogDev",
-    });
-  });
+  // gapi.load("client:auth2", () => {
+  //   gapi.client.init({
+  //     clientId: `${process.env.REACT_APP_GOOGLE_CLIENT_ID}`,
+  //     plugin_name: "blogDev",
+  //   });
+  // });
 
   return (
     <Routes>
