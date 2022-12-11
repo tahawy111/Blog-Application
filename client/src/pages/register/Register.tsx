@@ -20,15 +20,6 @@ const Register = () => {
 
             <RegisterForm />
 
-            {/* <small
-            className="row my-2 text-primary"
-            style={{ cursor: "pointer" }}
-          >
-            <span className="col-6">
-              <Link to="/forgot_password">Forgot password?</Link>
-            </span>
-          </small> */}
-
             <p>
               Already have an account?
               <Link to={`/login`} style={{ color: "crimson" }}>

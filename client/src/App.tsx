@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "./store";
 // import { gapi } from "gapi-script";
 import Profile from "./pages/profile/Profile";
+import Active from "./pages/active/Active";
 
 function App() {
   // const dispatch = useDispatch();
@@ -34,6 +35,10 @@ function App() {
         <Route
           path="register"
           element={auth.user ? <Navigate to="/" /> : <Register />}
+        />
+        <Route
+          path="active/:token"
+          element={auth.user ? <Navigate to="/" /> : <Active />}
         />
         {/* End Auth Routes */}
         <Route

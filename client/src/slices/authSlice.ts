@@ -92,6 +92,25 @@ export const facebookLogin = createAsyncThunk(
     }
   }
 );
+export const activeAccount = createAsyncThunk(
+  "auth/activeAccount",
+  async (token: string, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.post("/active", { active_token: token })
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const initialState: AuthState = {
   loading: false,
@@ -167,13 +186,11 @@ export const authSlice = createSlice({
       return { ...state, loading: true };
     });
     builder.addCase(register.fulfilled, (state: AuthState, action: any) => {
-      localStorage.user = JSON.stringify(action.payload);
       toast.success(`${action.payload.msg}`);
       return {
         ...state,
         loading: false,
         isSuccess: true,
-        user: action.payload,
       };
     });
 
@@ -234,6 +251,34 @@ export const authSlice = createSlice({
     );
     builder.addCase(
       facebookLogin.rejected,
+      (state: AuthState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          message: action.payload,
+          user: null,
+        };
+      }
+    );
+    builder.addCase(activeAccount.pending, (state: AuthState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(
+      activeAccount.fulfilled,
+      (state: AuthState, action: any) => {
+        toast.success(`${action.payload.msg}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          message: action.payload.msg,
+        };
+      }
+    );
+    builder.addCase(
+      activeAccount.rejected,
       (state: AuthState, action: PayloadAction) => {
         toast.error(`${action.payload}`);
         return {

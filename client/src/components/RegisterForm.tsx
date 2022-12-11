@@ -18,7 +18,7 @@ const RegisterForm = () => {
     cf_password: "",
   });
   const { name, account, password, cf_password } = registerForm;
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch: AppDispatch = useDispatch();
   const [typePass, setTypePass] = useState(false);
 
   const handleChangeInput = (e: InputChange) => {

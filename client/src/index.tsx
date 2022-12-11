@@ -14,16 +14,14 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <GoogleOAuthProvider
-          clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
-        >
-          <App />
-          <ToastContainer position="bottom-center" autoClose={5000} limit={3} />
-        </GoogleOAuthProvider>
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <Provider store={store}>
+      <GoogleOAuthProvider
+        clientId={`${process.env.REACT_APP_GOOGLE_CLIENT_ID}`}
+      >
+        <App />
+        <ToastContainer position="bottom-center" autoClose={5000} limit={3} />
+      </GoogleOAuthProvider>
+    </Provider>
+  </BrowserRouter>
 );
