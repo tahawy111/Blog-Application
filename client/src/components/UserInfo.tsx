@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { AppDispatch, RootState } from "../store";
-import { InputChange } from "../utils/TypeScript";
-import ModalInstance from "./Modal";
+import { InputChange, IFormEvent } from "../utils/TypeScript";
+// import ModalInstance from "./Modal";
+import AlertConfirm from "react-alert-confirm";
+import { checkImage, imageUpload } from "../utils/imageUpload";
 
 const UserInfo = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -18,11 +21,11 @@ const UserInfo = () => {
     account: "",
     password: "",
   });
-  console.log(changeAccountData);
   const handleChangeAccount = (e: InputChange) => {
     const { value, name } = e.target;
     setChangeAccountData({ ...changeAccountData, [name]: value });
   };
+
   const [showEmailModal, setShowEmailModal] = useState(false);
 
   const handleEmailModalClose = () => setShowEmailModal(false);
@@ -52,49 +55,77 @@ const UserInfo = () => {
   useEffect(() => {
     // console.log();
   });
-  function EmailModal() {
-    return (
-      <ModalInstance
-        title="Change Email"
-        closeText="Close"
-        submitText="Save Changes"
-        handleClose={handleEmailModalClose}
-        show={showEmailModal}
-      >
-        <div className="form-group">
-          <label htmlFor="password">Enter Your Passowrd</label>
-          <input
-            type={typePass2 ? "text" : "password"}
-            name="password"
-            className="form-control"
-            id="password"
-            value={changeAccountData.password}
-            onChange={handleChangeAccount}
-          />
-          <small
-            style={{ cursor: "pointer" }}
-            onClick={() => setTypePass2(!typePass2)}
-          >
-            {typePass2 ? "Hide" : "Show"}
-          </small>
-        </div>
-        <div className="form-group">
-          <label htmlFor="account-to-be">Enter New Account (Email)</label>
-          <input
-            type="text"
-            name="account"
-            className="form-control"
-            id="account-to-be"
-            value={changeAccountData.account}
-            onChange={handleChangeAccount}
-          />
-        </div>
-      </ModalInstance>
-    );
-  }
+
+  const handleChangeInfoSubmit = async (e: IFormEvent) => {
+    e.preventDefault();
+    if (
+      formData.avatar ||
+      formData.name ||
+      formData.password ||
+      formData.account
+    ) {
+      const [isOk] = await AlertConfirm(
+        "Are you sure to change your personal info?"
+      );
+      if (isOk)
+        if (formData.password !== formData.cfPassword)
+          toast.warning("Passwords do not matches");
+
+      let updateObj = {
+        name: formData.name,
+        account: formData.account,
+        password: formData.password || "",
+        avatar: formData.avatar.file || formData.avatar,
+      };
+      const check = checkImage(updateObj.avatar);
+      if (check !== "") return toast.warning(check);
+
+      const photo = await imageUpload(updateObj.avatar);
+    }
+  };
+  // function EmailModal() {
+  //   return (
+  //     <ModalInstance
+  //       title="Change Email"
+  //       closeText="Close"
+  //       submitText="Save Changes"
+  //       handleClose={handleEmailModalClose}
+  //       show={showEmailModal}
+  //     >
+  //       <div className="form-group">
+  //         <label htmlFor="password">Enter Your Passowrd</label>
+  //         <input
+  //           type={typePass2 ? "text" : "password"}
+  //           name="password"
+  //           className="form-control"
+  //           id="password"
+  //           value={changeAccountData.password}
+  //           onChange={handleChangeAccount}
+  //         />
+  //         <small
+  //           style={{ cursor: "pointer" }}
+  //           onClick={() => setTypePass2(!typePass2)}
+  //         >
+  //           {typePass2 ? "Hide" : "Show"}
+  //         </small>
+  //       </div>
+  //       <div className="form-group">
+  //         <label htmlFor="account-to-be">Enter New Account (Email)</label>
+  //         <input
+  //           type="text"
+  //           name="account"
+  //           className="form-control"
+  //           id="account-to-be"
+  //           value={changeAccountData.account}
+  //           onChange={handleChangeAccount}
+  //         />
+  //       </div>
+  //     </ModalInstance>
+  //   );
+  // }
 
   return (
-    <form className="profile_info">
+    <form className="profile_info" onSubmit={handleChangeInfoSubmit}>
       <div className="info_avatar">
         <img
           src={
@@ -136,18 +167,14 @@ const UserInfo = () => {
           id="account"
           value={formData.account}
           onChange={handleChangeInput}
-          disabled
+          disabled={user.type === "login"}
         />
-        {user.type !== "login" && (
-          <small
-            style={{ cursor: "pointer" }}
-            onClick={handleEmailModalShow}
-            className="text-danger"
-          >
-            Change Account
+
+        {user.type === "login" && (
+          <small style={{ cursor: "pointer" }} className="text-danger">
+            Your Account is linked wit social auth so you can't change it
           </small>
         )}
-        {user.type !== "login" && EmailModal()}
       </div>
       <div className="form-group">
         <label htmlFor="checkPassword">Passowrd</label>
@@ -158,6 +185,7 @@ const UserInfo = () => {
           id="checkPassword"
           value={formData.password}
           onChange={handleChangeInput}
+          disabled={user.type === "login"}
         />
         <small
           style={{ cursor: "pointer" }}
@@ -175,6 +203,7 @@ const UserInfo = () => {
           name="cfPassword"
           value={formData.cfPassword}
           onChange={handleChangeInput}
+          disabled={user.type === "login"}
         />
         <small
           style={{ cursor: "pointer" }}
@@ -183,7 +212,7 @@ const UserInfo = () => {
           {typePass ? "Hide" : "Show"}
         </small>
       </div>
-      <button className="btn btn-info w-100" type="submit">
+      <button className="btn btn-dark w-100" type="submit">
         Update
       </button>
     </form>
