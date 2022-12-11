@@ -3,3 +3,7 @@ a:hover {
   text-decoration: none;
   color: inherit;
 }
+
+.modal.fade .modal-dialog {
+  transform: translate(0, 245px) !important;
+}

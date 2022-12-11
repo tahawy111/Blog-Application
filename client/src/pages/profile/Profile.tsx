@@ -9,7 +9,7 @@ import UserBlogs from "../../components/UserBlogs";
 const Profile = () => {
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch: AppDispatch = useDispatch();
-  const user = auth.user.user;
+  const user = auth?.user.user;
   return (
     <Layout>
       {/* <div className="row my-3 ">

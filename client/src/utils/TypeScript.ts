@@ -7,3 +7,11 @@ export interface IFacebookLoginPayload {
   accessToken: string;
   userID: string;
 }
+
+export interface IUserInfo {
+  name: string;
+  account: string;
+  password: string;
+  cfPassword: string;
+  avatar: string | File;
+}
