@@ -1,15 +1,6 @@
 import mongoose from "mongoose";
 
-export interface IModelUser {
-  name: string;
-  account: string;
-  password: string;
-  avatar?: string;
-  role: string;
-  type: string;
-}
-
-const userSchema = new mongoose.Schema<IModelUser>(
+const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,

@@ -14,6 +14,15 @@ const UserInfo = () => {
     cfPassword: "",
     avatar: user?.avatar,
   });
+  const [changeAccountData, setChangeAccountData] = useState({
+    account: user?.account,
+    password: "",
+  });
+  console.log(changeAccountData);
+  const handleChangeAccount = (e: InputChange) => {
+    const { value, name } = e.target;
+    setChangeAccountData({ ...changeAccountData, [name]: value });
+  };
   const [showEmailModal, setShowEmailModal] = useState(false);
 
   const handleEmailModalClose = () => setShowEmailModal(false);
@@ -37,6 +46,7 @@ const UserInfo = () => {
   };
 
   const [typePass, setTypePass] = useState(false);
+  const [typePass2, setTypePass2] = useState(false);
 
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
@@ -49,7 +59,34 @@ const UserInfo = () => {
         handleShow={handleEmailModalShow}
         show={showEmailModal}
       >
-        Hello
+        <div className="form-group">
+          <label htmlFor="password">Enter Your Passowrd</label>
+          <input
+            type={typePass2 ? "text" : "password"}
+            name="password"
+            className="form-control"
+            id="password"
+            value={changeAccountData.password}
+            onChange={handleChangeAccount}
+          />
+          <small
+            style={{ cursor: "pointer" }}
+            onClick={() => setTypePass2(!typePass2)}
+          >
+            {typePass2 ? "Hide" : "Show"}
+          </small>
+        </div>
+        <div className="form-group">
+          <label htmlFor="account-to-be">Enter New Account (Email)</label>
+          <input
+            type="text"
+            name="account"
+            className="form-control"
+            id="account-to-be"
+            value={changeAccountData.account}
+            onChange={handleChangeAccount}
+          />
+        </div>
       </ModalInstance>
     );
   }
@@ -99,22 +136,24 @@ const UserInfo = () => {
           onChange={handleChangeInput}
           disabled
         />
-        <small
-          style={{ cursor: "pointer" }}
-          onClick={handleEmailModalShow}
-          className="text-danger"
-        >
-          Change Account
-        </small>
-        {EmailModal()}
+        {user.type !== "login" && (
+          <small
+            style={{ cursor: "pointer" }}
+            onClick={handleEmailModalShow}
+            className="text-danger"
+          >
+            Change Account
+          </small>
+        )}
+        {user.type !== "login" && EmailModal()}
       </div>
       <div className="form-group">
-        <label htmlFor="password">Passowrd</label>
+        <label htmlFor="checkPassword">Passowrd</label>
         <input
           type={typePass ? "text" : "password"}
           name="password"
           className="form-control"
-          id="password"
+          id="checkPassword"
           value={formData.password}
           onChange={handleChangeInput}
         />

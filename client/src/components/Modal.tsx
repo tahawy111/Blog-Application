@@ -6,7 +6,7 @@ interface ModalProps {
   show: boolean;
   handleShow: () => void;
   handleClose: () => void;
-  children: string;
+  children: any;
 }
 
 function ModalInstance({
