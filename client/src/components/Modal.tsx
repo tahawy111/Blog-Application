@@ -4,29 +4,33 @@ import Modal from "react-bootstrap/Modal";
 
 interface ModalProps {
   show: boolean;
-  handleShow: () => void;
   handleClose: () => void;
   children: any;
+  title: string;
+  closeText: string;
+  submitText: string;
 }
 
 function ModalInstance({
   show,
-  handleShow,
   handleClose,
   children,
+  title,
+  closeText,
+  submitText,
 }: ModalProps) {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
+        <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body>{children}</Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
-          Close
+          {closeText}
         </Button>
         <Button variant="primary" onClick={handleClose}>
-          Save Changes
+          {submitText}
         </Button>
       </Modal.Footer>
     </Modal>

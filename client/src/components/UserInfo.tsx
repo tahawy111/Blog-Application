@@ -15,7 +15,7 @@ const UserInfo = () => {
     avatar: user?.avatar,
   });
   const [changeAccountData, setChangeAccountData] = useState({
-    account: user?.account,
+    account: "",
     password: "",
   });
   console.log(changeAccountData);
@@ -55,8 +55,10 @@ const UserInfo = () => {
   function EmailModal() {
     return (
       <ModalInstance
+        title="Change Email"
+        closeText="Close"
+        submitText="Save Changes"
         handleClose={handleEmailModalClose}
-        handleShow={handleEmailModalShow}
         show={showEmailModal}
       >
         <div className="form-group">
