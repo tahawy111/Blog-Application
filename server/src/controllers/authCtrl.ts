@@ -14,7 +14,7 @@ import { OAuth2Client } from "google-auth-library";
 import axios from "axios";
 
 const client = new OAuth2Client(`${process.env.MAIL_CLIEN_ID}`);
-const CLIENT_URL = `${process.env.BASE_URL}`;
+export const CLIENT_URL = `${process.env.BASE_URL}`;
 
 export const register = async (req: Request, res: Response) => {
   try {

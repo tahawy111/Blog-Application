@@ -20,6 +20,7 @@ export interface INewUser {
 export interface IToken extends INewUser {
   id?: string;
   newUser?: INewUser;
+  user?: IUser;
   iat: number;
   exp: number;
 }
