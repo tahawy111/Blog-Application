@@ -111,6 +111,25 @@ export const activeAccount = createAsyncThunk(
     }
   }
 );
+export const update = createAsyncThunk(
+  "auth/update",
+  async (user: IUserLogin, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.patch("/user", user)
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 const initialState: AuthState = {
   loading: false,

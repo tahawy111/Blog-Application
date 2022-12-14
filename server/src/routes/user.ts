@@ -6,6 +6,6 @@ import { validRegister } from "../middlewares/valid";
 const router = Router();
 
 router.patch("/user", auth, updateUser);
-router.post("/confirmChangeEmail", auth, confirmUpdateUser);
+router.post("/confirmChangeEmail", confirmUpdateUser);
 
 export default router;

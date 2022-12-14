@@ -26,7 +26,10 @@ export const updateUser = async (req: IReqAuth, res: Response) => {
       req.body.account !== req.user?.account &&
       req.body.account !== undefined
     ) {
-      const active_token = generateActiveToken({ user: req.body });
+      const active_token = generateActiveToken({
+        id: req.user?.id,
+        user: req.body,
+      });
       const url = `${CLIENT_URL}/changeEmail/${active_token}`;
       const SENDER_MAIL = `${process.env.SENDER_EMAIL_ADDRESS}`;
       const txt = "Verify Your Email Address";
@@ -76,7 +79,7 @@ export const updateUser = async (req: IReqAuth, res: Response) => {
   }
 };
 
-export const confirmUpdateUser = async (req: IReqAuth, res: Response) => {
+export const confirmUpdateUser = async (req: Request, res: Response) => {
   try {
     const { active_token } = req.body;
     if (!active_token)
@@ -84,20 +87,18 @@ export const confirmUpdateUser = async (req: IReqAuth, res: Response) => {
     const decoded = <IToken>(
       jwt.verify(active_token, `${process.env.ACTIVE_TOKEN_SECRET}`)
     );
-    const updateObj: any = {};
-    if (decoded.user?.name) updateObj.name = decoded.user?.name;
-    if (decoded.user?.account) updateObj.account = decoded.user?.account;
-    if (decoded.user?.avatar) updateObj.avatar = decoded.user?.avatar;
-    if (decoded.user?.password) updateObj.password = decoded.user?.password;
 
-    const savedUser = await User.findByIdAndUpdate(req.user?._id, {
-      name: decoded.user?.name,
-      account: decoded.user?.account,
-      password: decoded.user?.password,
-      avatar: decoded.user?.avatar,
+    const user = await User.findByIdAndUpdate(decoded.id, decoded.user, {
+      new: true,
     });
-    res.json({ msg: "User Updated Successfully", savedUser });
+    return res.status(200).json({ msg: "User Changed Successfully!", user });
   } catch (error: any) {
-    return res.status(400).json({ msg: error.message });
+    if (error.code === 11000)
+      return res.status(403).json({ msg: "Account is already exist!" });
+    if (error.name === "TokenExpiredError")
+      return res
+        .status(403)
+        .json({ msg: "Token is expired please try again!" });
+    return res.status(400).json({ msg: error });
   }
 };
