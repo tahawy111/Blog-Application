@@ -8,9 +8,10 @@ export const auth = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.headers);
   try {
     const token = req.headers?.authorization;
-    if (!token) return res.status(404).json({ msg: "Invalid Authentication" });
+    if (!token) return res.status(404).json({ msg: "Token Not Found" });
     const decoded = <IDecodedToken>(
       jwt.verify(token, `${process.env.ACCESS_TOKEN_SECRET}`)
     );
@@ -18,7 +19,8 @@ export const auth = async (
       return res.status(404).json({ msg: "Invalid Authentication" });
 
     const user = await User.findById(decoded.id);
-    if (!user) return res.status(404).json({ msg: "Invalid Authentication" });
+    if (!user)
+      return res.status(404).json({ msg: "User Not Found In autherization" });
     req.user = user;
     next();
   } catch (error: any) {

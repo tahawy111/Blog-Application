@@ -6,6 +6,7 @@ import { InputChange, IFormEvent } from "../utils/TypeScript";
 // import ModalInstance from "./Modal";
 import AlertConfirm from "react-alert-confirm";
 import { checkImage, imageUpload } from "../utils/imageUpload";
+import { update } from "../slices/authSlice";
 
 const UserInfo = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -71,7 +72,12 @@ const UserInfo = () => {
         if (formData.password !== formData.cfPassword)
           toast.warning("Passwords do not matches");
 
-      let updateObj = {
+      let updateObj: {
+        name: string;
+        account: string;
+        password: string;
+        avatar: File;
+      } = {
         name: formData.name,
         account: formData.account,
         password: formData.password || "",
@@ -79,8 +85,9 @@ const UserInfo = () => {
       };
       const check = checkImage(updateObj.avatar);
       if (check !== "") return toast.warning(check);
-
       const photo = await imageUpload(updateObj.avatar);
+      if (photo.url) updateObj.avatar = photo.url;
+      dispatch(update(updateObj));
     }
   };
   // function EmailModal() {

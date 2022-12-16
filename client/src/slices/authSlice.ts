@@ -309,6 +309,37 @@ export const authSlice = createSlice({
         };
       }
     );
+    builder.addCase(update.pending, (state: AuthState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(update.fulfilled, (state: AuthState, action: any) => {
+      const userVar = {
+        user: action.payload.user,
+        access_token: state.user?.access_token,
+      };
+      toast.success(`${action.payload.msg}`);
+      localStorage.setItem("user", JSON.stringify(userVar));
+      return {
+        ...state,
+        loading: false,
+        isSuccess: true,
+        user: userVar,
+        message: action.payload.msg,
+      };
+    });
+    builder.addCase(
+      update.rejected,
+      (state: AuthState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          message: action.payload,
+          user: null,
+        };
+      }
+    );
   },
 });
 

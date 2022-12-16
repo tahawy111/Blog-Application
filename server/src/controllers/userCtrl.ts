@@ -67,10 +67,11 @@ export const updateUser = async (req: IReqAuth, res: Response) => {
     }
 
     try {
-      await User.findByIdAndUpdate(req.user?._id, req.body, {
+      const user = await User.findByIdAndUpdate(req.user?._id, req.body, {
         new: true,
-      });
-      res.json({ msg: "User Updated Successfully" });
+      }).select("-password");
+
+      res.json({ msg: "User Updated Successfully", user });
     } catch (error: any) {
       return res.status(400).json({ msg: error.message });
     }
@@ -90,7 +91,7 @@ export const confirmUpdateUser = async (req: Request, res: Response) => {
 
     const user = await User.findByIdAndUpdate(decoded.id, decoded.user, {
       new: true,
-    });
+    }).select("-password");
     return res.status(200).json({ msg: "User Changed Successfully!", user });
   } catch (error: any) {
     if (error.code === 11000)
