@@ -113,11 +113,44 @@ export const activeAccount = createAsyncThunk(
 );
 export const update = createAsyncThunk(
   "auth/update",
-  async (user: IUserLogin, thunkAPI) => {
+  async (
+    user: {
+      name: string;
+      account: string;
+      avatar: File | string;
+    },
+    thunkAPI
+  ) => {
     try {
       return thunkAPI.fulfillWithValue(
         await (
           await axiosIntance.patch("/user", user)
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (
+    user: {
+      oldPassword: string;
+      password: string;
+      password2: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.post("/resetPassword", user)
         ).data
       );
     } catch (error: any) {
@@ -329,6 +362,40 @@ export const authSlice = createSlice({
     });
     builder.addCase(
       update.rejected,
+      (state: AuthState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          message: action.payload,
+          user: null,
+        };
+      }
+    );
+    builder.addCase(resetPassword.pending, (state: AuthState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(
+      resetPassword.fulfilled,
+      (state: AuthState, action: any) => {
+        const userVar = {
+          user: action.payload.user,
+          access_token: state.user?.access_token,
+        };
+        toast.success(`${action.payload.msg}`);
+        localStorage.setItem("user", JSON.stringify(userVar));
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          user: userVar,
+          message: action.payload.msg,
+        };
+      }
+    );
+    builder.addCase(
+      resetPassword.rejected,
       (state: AuthState, action: PayloadAction) => {
         toast.error(`${action.payload}`);
         return {

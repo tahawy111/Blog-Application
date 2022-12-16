@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export interface IUserLogin {
   account: string;
-  password: string;
+  password?: string;
 }
 const LoginPass = () => {
   const navigate = useNavigate();

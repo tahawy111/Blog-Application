@@ -16,11 +16,13 @@ export const updateUser = async (req: IReqAuth, res: Response) => {
     req.body.avatar === req.user?.avatar && delete req.body.avatar;
     req.body.account === req.user?.account && delete req.body.account;
 
-    if (bcrypt.compareSync(req.body.password, req.user?.password)) {
-      delete req.body.password;
-    } else {
-      req.body.password = bcrypt.hashSync(req.body.password, 12);
-    }
+    // if (bcrypt.compareSync(req.body.oldPassword, req.user?.password))
+    //   return res.status(403).json({ msg: "Old Password is Wrong" });
+    // if (bcrypt.compareSync(req.body.password, req.user?.password)) {
+    //   delete req.body.password;
+    // } else {
+    //   req.body.password = bcrypt.hashSync(req.body.password, 12);
+    // }
 
     if (
       req.body.account !== req.user?.account &&
@@ -92,6 +94,7 @@ export const confirmUpdateUser = async (req: Request, res: Response) => {
     const user = await User.findByIdAndUpdate(decoded.id, decoded.user, {
       new: true,
     }).select("-password");
+
     return res.status(200).json({ msg: "User Changed Successfully!", user });
   } catch (error: any) {
     if (error.code === 11000)
@@ -101,5 +104,34 @@ export const confirmUpdateUser = async (req: Request, res: Response) => {
         .status(403)
         .json({ msg: "Token is expired please try again!" });
     return res.status(400).json({ msg: error });
+  }
+};
+
+export const resetPassword = async (req: IReqAuth, res: Response) => {
+  if (!req.user) return res.status(400).json({ msg: "Invalid Authentication" });
+
+  if (!bcrypt.compareSync(req.body.oldPassword, req.user?.password))
+    return res.status(403).json({ msg: "Old Password is Wrong" });
+
+  if (bcrypt.compareSync(req.body.password, req.user?.password)) {
+    return res
+      .status(403)
+      .json({ msg: "You can't change to the old password" });
+  } else {
+    req.body.password = bcrypt.hashSync(req.body.password, 12);
+  }
+
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user?._id,
+      { password: req.body.password },
+      {
+        new: true,
+      }
+    ).select("-password");
+
+    res.json({ msg: "Reset Password Successfully", user });
+  } catch (error: any) {
+    return res.status(400).json({ msg: error.message });
   }
 };

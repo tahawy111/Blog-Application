@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { AppDispatch, RootState } from "../store";
 import { InputChange, IFormEvent } from "../utils/TypeScript";
-// import ModalInstance from "./Modal";
+import ModalInstance from "./Modal";
 import AlertConfirm from "react-alert-confirm";
 import { checkImage, imageUpload } from "../utils/imageUpload";
-import { update } from "../slices/authSlice";
+import { resetPassword, update } from "../slices/authSlice";
+import Loading from "./Loading";
 
 const UserInfo = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -14,23 +15,24 @@ const UserInfo = () => {
   const [formData, setFormData] = useState({
     name: user?.name,
     account: user?.account,
-    password: "",
-    cfPassword: "",
     avatar: user?.avatar,
   });
-  const [changeAccountData, setChangeAccountData] = useState({
-    account: "",
+  const [changePasswordData, setChangePasswordData] = useState({
+    oldPassword: "",
     password: "",
+    password2: "",
   });
-  const handleChangeAccount = (e: InputChange) => {
+
+  const handleChangePassword = (e: InputChange) => {
     const { value, name } = e.target;
-    setChangeAccountData({ ...changeAccountData, [name]: value });
+    setChangePasswordData({ ...changePasswordData, [name]: value });
   };
 
-  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
-  const handleEmailModalClose = () => setShowEmailModal(false);
-  const handleEmailModalShow = () => setShowEmailModal(true);
+  const handleChangePasswordModalClose = () =>
+    setShowChangePasswordModal(false);
+  const handleChangePasswordModalShow = () => setShowChangePasswordModal(true);
 
   const handleChangeInput = (e: InputChange) => {
     if (e.target.type === "file") {
@@ -57,30 +59,29 @@ const UserInfo = () => {
     // console.log();
   });
 
+  const handleChangePasswordSubmit = async (e: IFormEvent) => {
+    if (changePasswordData.password !== changePasswordData.password2)
+      toast.warning("Passwords do not matches");
+
+    dispatch(resetPassword(changePasswordData));
+
+    setShowChangePasswordModal(false);
+  };
+
   const handleChangeInfoSubmit = async (e: IFormEvent) => {
     e.preventDefault();
-    if (
-      formData.avatar ||
-      formData.name ||
-      formData.password ||
-      formData.account
-    ) {
+    if (formData.avatar || formData.name || formData.account) {
       const [isOk] = await AlertConfirm(
         "Are you sure to change your personal info?"
       );
-      if (isOk)
-        if (formData.password !== formData.cfPassword)
-          toast.warning("Passwords do not matches");
 
       let updateObj: {
         name: string;
         account: string;
-        password: string;
         avatar: File;
       } = {
         name: formData.name,
         account: formData.account,
-        password: formData.password || "",
         avatar: formData.avatar.file || formData.avatar,
       };
       const check = checkImage(updateObj.avatar);
@@ -90,48 +91,62 @@ const UserInfo = () => {
       dispatch(update(updateObj));
     }
   };
-  // function EmailModal() {
-  //   return (
-  //     <ModalInstance
-  //       title="Change Email"
-  //       closeText="Close"
-  //       submitText="Save Changes"
-  //       handleClose={handleEmailModalClose}
-  //       show={showEmailModal}
-  //     >
-  //       <div className="form-group">
-  //         <label htmlFor="password">Enter Your Passowrd</label>
-  //         <input
-  //           type={typePass2 ? "text" : "password"}
-  //           name="password"
-  //           className="form-control"
-  //           id="password"
-  //           value={changeAccountData.password}
-  //           onChange={handleChangeAccount}
-  //         />
-  //         <small
-  //           style={{ cursor: "pointer" }}
-  //           onClick={() => setTypePass2(!typePass2)}
-  //         >
-  //           {typePass2 ? "Hide" : "Show"}
-  //         </small>
-  //       </div>
-  //       <div className="form-group">
-  //         <label htmlFor="account-to-be">Enter New Account (Email)</label>
-  //         <input
-  //           type="text"
-  //           name="account"
-  //           className="form-control"
-  //           id="account-to-be"
-  //           value={changeAccountData.account}
-  //           onChange={handleChangeAccount}
-  //         />
-  //       </div>
-  //     </ModalInstance>
-  //   );
-  // }
+  function ChangePasswordModal() {
+    return (
+      <ModalInstance
+        title="Change Password"
+        closeText="Cancel"
+        submitText="Change Password"
+        handleClose={handleChangePasswordModalClose}
+        handleSubmit={handleChangePasswordSubmit}
+        show={showChangePasswordModal}
+      >
+        <div className="form-group">
+          <label htmlFor="oldPassword">Enter Your Old Passowrd</label>
+          <input
+            type={typePass2 ? "text" : "password"}
+            name="oldPassword"
+            className="form-control"
+            id="oldPassword"
+            value={changePasswordData.oldPassword}
+            onChange={handleChangePassword}
+          />
+          <small
+            style={{ cursor: "pointer" }}
+            onClick={() => setTypePass2(!typePass2)}
+          >
+            {typePass2 ? "Hide" : "Show"}
+          </small>
+        </div>
+        <div className="form-group">
+          <label htmlFor="PasswordChange">Enter New Password</label>
+          <input
+            type="text"
+            name="password"
+            className="form-control"
+            id="PasswordChange"
+            value={changePasswordData.password}
+            onChange={handleChangePassword}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="PasswordChange2">Confirm New Password</label>
+          <input
+            type="text"
+            name="password2"
+            className="form-control"
+            id="PasswordChange2"
+            value={changePasswordData.password2}
+            onChange={handleChangePassword}
+          />
+        </div>
+      </ModalInstance>
+    );
+  }
 
-  return (
+  return auth.loading ? (
+    <Loading />
+  ) : (
     <form className="profile_info" onSubmit={handleChangeInfoSubmit}>
       <div className="info_avatar">
         <img
@@ -183,7 +198,7 @@ const UserInfo = () => {
           </small>
         )}
       </div>
-      <div className="form-group">
+      {/* <div className="form-group">
         <label htmlFor="checkPassword">Passowrd</label>
         <input
           type={typePass ? "text" : "password"}
@@ -218,10 +233,18 @@ const UserInfo = () => {
         >
           {typePass ? "Hide" : "Show"}
         </small>
-      </div>
+      </div> */}
+      <small
+        style={{ cursor: "pointer" }}
+        onClick={handleChangePasswordModalShow}
+        className="text-danger"
+      >
+        Change Password
+      </small>
       <button className="btn btn-dark w-100" type="submit">
         Update
       </button>
+      {ChangePasswordModal()}
     </form>
   );
 };

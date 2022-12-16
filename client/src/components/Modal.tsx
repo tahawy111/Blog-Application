@@ -4,16 +4,18 @@ import Modal from "react-bootstrap/Modal";
 
 interface ModalProps {
   show: boolean;
-  handleClose: () => void;
+  handleClose: () => any;
   children: any;
   title: string;
   closeText: string;
   submitText: string;
+  handleSubmit: any;
 }
 
 function ModalInstance({
   show,
   handleClose,
+  handleSubmit,
   children,
   title,
   closeText,
@@ -29,7 +31,7 @@ function ModalInstance({
         <Button variant="secondary" onClick={handleClose}>
           {closeText}
         </Button>
-        <Button variant="primary" onClick={handleClose}>
+        <Button variant="primary" onClick={handleSubmit}>
           {submitText}
         </Button>
       </Modal.Footer>
