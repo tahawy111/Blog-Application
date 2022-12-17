@@ -9,6 +9,7 @@ import { RootState } from "./store";
 // import { gapi } from "gapi-script";
 import Profile from "./pages/profile/Profile";
 import Active from "./pages/active/Active";
+import ChangeEmail from "./pages/active/ChangeEmail";
 
 function App() {
   // const dispatch = useDispatch();
@@ -44,6 +45,10 @@ function App() {
         <Route
           path="profile"
           element={auth.user ? <Profile /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="changeEmail/:token"
+          element={auth.user ? <ChangeEmail /> : <Navigate to="/login" />}
         />
       </Route>
       <Route path="*" element={<NotFound />} />

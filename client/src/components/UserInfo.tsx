@@ -7,7 +7,7 @@ import ModalInstance from "./Modal";
 import AlertConfirm from "react-alert-confirm";
 import { checkImage, imageUpload } from "../utils/imageUpload";
 import { resetPassword, update } from "../slices/authSlice";
-import Loading from "./Loading";
+import { startLoading, stopLoading } from "../slices/globalSlice";
 
 const UserInfo = () => {
   const auth = useSelector((state: RootState) => state.auth);
@@ -51,7 +51,6 @@ const UserInfo = () => {
     }
   };
 
-  const [typePass, setTypePass] = useState(false);
   const [typePass2, setTypePass2] = useState(false);
 
   const dispatch: AppDispatch = useDispatch();
@@ -63,7 +62,9 @@ const UserInfo = () => {
     if (changePasswordData.password !== changePasswordData.password2)
       toast.warning("Passwords do not matches");
 
+    dispatch(startLoading());
     dispatch(resetPassword(changePasswordData));
+    dispatch(stopLoading());
 
     setShowChangePasswordModal(false);
   };
@@ -84,11 +85,16 @@ const UserInfo = () => {
         account: formData.account,
         avatar: formData.avatar.file || formData.avatar,
       };
+
+      dispatch(startLoading());
       const check = checkImage(updateObj.avatar);
       if (check !== "") return toast.warning(check);
-      const photo = await imageUpload(updateObj.avatar);
-      if (photo.url) updateObj.avatar = photo.url;
+      if (updateObj.avatar.name !== user.avatar) {
+        const photo = await imageUpload(updateObj.avatar);
+        if (photo.url) updateObj.avatar = photo.url;
+      }
       dispatch(update(updateObj));
+      dispatch(stopLoading());
     }
   };
   function ChangePasswordModal() {
@@ -144,9 +150,7 @@ const UserInfo = () => {
     );
   }
 
-  return auth.loading ? (
-    <Loading />
-  ) : (
+  return (
     <form className="profile_info" onSubmit={handleChangeInfoSubmit}>
       <div className="info_avatar">
         <img

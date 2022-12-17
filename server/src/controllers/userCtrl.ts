@@ -34,7 +34,7 @@ export const updateUser = async (req: IReqAuth, res: Response) => {
       });
       const url = `${CLIENT_URL}/changeEmail/${active_token}`;
       const SENDER_MAIL = `${process.env.SENDER_EMAIL_ADDRESS}`;
-      const txt = "Verify Your Email Address";
+      const txt = "Confirm Your Email Address";
       const mailOptions = {
         from: `"Change Email" <${SENDER_MAIL}>`,
         to: req.body.account,

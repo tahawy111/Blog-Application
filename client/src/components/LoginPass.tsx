@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import { login } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { startLoading, stopLoading } from "../slices/globalSlice";
 
 export interface IUserLogin {
   account: string;
@@ -22,8 +23,9 @@ const LoginPass = () => {
   };
   const submitHandler = (e: IFormEvent) => {
     e.preventDefault();
-
+    dispatch(startLoading());
     dispatch(login(userLogin)).then(() => {
+      dispatch(stopLoading());
       navigate("/");
     });
   };

@@ -111,6 +111,7 @@ export const activeAccount = createAsyncThunk(
     }
   }
 );
+
 export const update = createAsyncThunk(
   "auth/update",
   async (
@@ -151,6 +152,28 @@ export const resetPassword = createAsyncThunk(
       return thunkAPI.fulfillWithValue(
         await (
           await axiosIntance.post("/resetPassword", user)
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const changeEmail = createAsyncThunk(
+  "auth/changeEmail",
+  async (token: string, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.post("/confirmChangeEmail", {
+            active_token: token,
+          })
         ).data
       );
     } catch (error: any) {
@@ -347,7 +370,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(update.fulfilled, (state: AuthState, action: any) => {
       const userVar = {
-        user: action.payload.user,
+        user: action.payload.user || state.user.user,
         access_token: state.user?.access_token,
       };
       toast.success(`${action.payload.msg}`);
@@ -396,6 +419,37 @@ export const authSlice = createSlice({
     );
     builder.addCase(
       resetPassword.rejected,
+      (state: AuthState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          message: action.payload,
+          user: null,
+        };
+      }
+    );
+    builder.addCase(changeEmail.pending, (state: AuthState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(changeEmail.fulfilled, (state: AuthState, action: any) => {
+      const userVar = {
+        user: action.payload.user,
+        access_token: state.user?.access_token,
+      };
+      toast.success(`${action.payload.msg}`);
+      localStorage.setItem("user", JSON.stringify(userVar));
+      return {
+        ...state,
+        loading: false,
+        isSuccess: true,
+        user: userVar,
+        message: action.payload.msg,
+      };
+    });
+    builder.addCase(
+      changeEmail.rejected,
       (state: AuthState, action: PayloadAction) => {
         toast.error(`${action.payload}`);
         return {

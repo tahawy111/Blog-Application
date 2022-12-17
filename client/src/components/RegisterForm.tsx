@@ -3,6 +3,7 @@ import { IFormEvent, InputChange } from "../utils/TypeScript";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
 import { register } from "../slices/authSlice";
+import { startLoading, stopLoading } from "../slices/globalSlice";
 
 export interface IUserRegister {
   name: string;
@@ -25,10 +26,11 @@ const RegisterForm = () => {
     const { value, name } = e.target;
     setRegisterForm({ ...registerForm, [name]: value });
   };
-  const submitHandler = (e: IFormEvent) => {
+  const submitHandler = async (e: IFormEvent) => {
     e.preventDefault();
-
-    dispatch(register(registerForm));
+    dispatch(startLoading());
+    await dispatch(register(registerForm));
+    dispatch(stopLoading());
   };
   return (
     <form onSubmit={submitHandler}>
