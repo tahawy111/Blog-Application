@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import Test from "../models/Test";
 import { IReqAuth, IToken } from "../config/interface";
 import bcrypt from "bcrypt";
 import User from "../models/User";
@@ -133,5 +134,35 @@ export const resetPassword = async (req: IReqAuth, res: Response) => {
     res.json({ msg: "Reset Password Successfully", user });
   } catch (error: any) {
     return res.status(400).json({ msg: error.message });
+  }
+};
+
+// Test
+export const test = async (req: Request, res: Response) => {
+  try {
+    /* Add Person */
+    // const newPerson = new Test({
+    //   name: "Samir",
+    //   isActive: false,
+    //   age: 47,
+    //   gender: "male",
+    //   eyeColor: "green",
+    //   favoriteFruit: "banana",
+    //   company: {},
+    //   tags: ["Hello", "Do", "You"],
+    // });
+    // const person = await newPerson.save();
+    // res.send(person);
+    const findAggregate = await Test.aggregate([
+      // {
+      //   $group: { _id: { favoriteFruit: "$favoriteFruit", gender: "$gender" } },
+      // },
+      {
+        $count: "Hello",
+      },
+    ]);
+    res.send(findAggregate);
+  } catch (error) {
+    res.status(400).json({ error });
   }
 };

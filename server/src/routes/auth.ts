@@ -8,6 +8,7 @@ import {
   googleLogin,
   facebookLogin,
 } from "../controllers/authCtrl";
+import { test } from "../controllers/userCtrl";
 import { validRegister } from "../middlewares/valid";
 
 const router = Router();
@@ -19,5 +20,8 @@ router.get("/logout", logout);
 router.get("/refresh_token", refreshToken);
 router.post("/google_login", googleLogin);
 router.post("/facebook_login", facebookLogin);
+
+// Tests
+router.post("/test", test);
 
 export default router;
