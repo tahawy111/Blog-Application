@@ -104,6 +104,7 @@ const loginUser = (user: IUser, passwordC: string, res: Response) => {
 
   if (!isMatch) return res.status(403).json({ msg: "password is incorrect" });
   const access_token = generateAccessToken({ id: user._id });
+
   const { password, ...userR } = user;
 
   res.json({ msg: "Login success!", access_token, user: userR._doc });
