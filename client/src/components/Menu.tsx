@@ -33,7 +33,7 @@ const Menu = () => {
             title={
               <span>
                 <img
-                  src={auth.user?.user.avatar}
+                  src={auth.user?.user?.avatar}
                   className="img-thumbnail"
                   alt="avatar"
                   style={{ width: "50px" }}

@@ -4,15 +4,18 @@ import Register from "./pages/register/Register";
 import Login from "./pages/login/Login";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/home/Home";
-import { useSelector } from "react-redux";
-import { RootState } from "./store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "./store";
 // import { gapi } from "gapi-script";
 import Profile from "./pages/profile/Profile";
 import Active from "./pages/active/Active";
 import ChangeEmail from "./pages/active/ChangeEmail";
+import { useJwt } from "react-jwt";
+import { logout } from "./slices/authSlice";
+import { useEffect } from "react";
 
 function App() {
-  // const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
   // gapi.load("client:auth2", () => {
   //   gapi.client.init({
@@ -20,6 +23,16 @@ function App() {
   //     plugin_name: "blogDev",
   //   });
   // });
+
+  const { isExpired } = useJwt(auth.user?.access_token);
+
+  console.log({ isExpired, isSuccess: auth.isSuccess });
+
+  useEffect(() => {
+    if (auth.user !== null && isExpired) {
+      dispatch(logout());
+    }
+  }, [isExpired]);
 
   return (
     <Routes>
