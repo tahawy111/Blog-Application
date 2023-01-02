@@ -156,6 +156,8 @@ export const googleLogin = async (req: Request, res: Response) => {
     const passwordHash = bcrypt.hashSync(password, 12);
     const user: IUser | null = await User.findOne({ account: email });
     if (user) {
+      if (user.type === "register")
+      return res.status(500).json({ msg: "This Email Is Used In A Normal Login" });
       loginUser(user, password, res);
     } else {
       const user: IUserParams = {
@@ -192,6 +194,8 @@ export const facebookLogin = async (req: Request, res: Response) => {
     const passwordHash = bcrypt.hashSync(password, 12);
     const user: IUser | null = await User.findOne({ account: email });
     if (user) {
+      if (user.type === "register")
+      return res.status(500).json({ msg: "This Email Is Used In A Normal Login" });
       loginUser(user, password, res);
     } else {
       const user: IUserParams = {

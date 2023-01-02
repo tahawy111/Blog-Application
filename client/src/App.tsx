@@ -13,6 +13,7 @@ import ChangeEmail from "./pages/active/ChangeEmail";
 import { useJwt } from "react-jwt";
 import { logout } from "./slices/authSlice";
 import { useEffect } from "react";
+import Category from "./pages/category/Category";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -62,6 +63,11 @@ function App() {
         <Route
           path="changeEmail/:token"
           element={auth.user ? <ChangeEmail /> : <Navigate to="/login" />}
+        />
+        {/* Category */}
+        <Route
+          path="category"
+          element={auth.user ? <Category /> : <Navigate to="/login" />}
         />
       </Route>
       <Route path="*" element={<NotFound />} />

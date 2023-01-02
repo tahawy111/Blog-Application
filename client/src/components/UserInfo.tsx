@@ -75,7 +75,7 @@ const UserInfo = () => {
       const [isOk] = await AlertConfirm(
         "Are you sure to change your personal info?"
       );
-
+      if (!isOk) return;
       let updateObj: {
         name: string;
         account: string;
@@ -89,13 +89,13 @@ const UserInfo = () => {
       dispatch(startLoading());
       const check = checkImage(updateObj.avatar);
       if (check !== "") return toast.warning(check);
-      if (updateObj.avatar.name !== user.avatar) {
+      if ((updateObj.avatar?.name || updateObj.avatar) !== user.avatar) {
         const photo = await imageUpload(updateObj.avatar);
         if (photo.url) updateObj.avatar = photo.url;
       }
       dispatch(update(updateObj));
-      dispatch(stopLoading());
     }
+    dispatch(stopLoading());
   };
   function ChangePasswordModal() {
     return (

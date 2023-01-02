@@ -28,6 +28,11 @@ const Menu = () => {
             <NavLink to={link.path}>{link.label}</NavLink>
           </Nav.Link>
         ))}
+        {auth.user?.user.role === "admin" && (
+          <Nav.Link>
+            <NavLink to={`/category`}>Category</NavLink>
+          </Nav.Link>
+        )}
         {auth.user ? (
           <NavDropdown
             title={
