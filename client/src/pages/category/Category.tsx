@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { IFormEvent, InputChange } from "../../utils/TypeScript";
+import { ICategory, IFormEvent } from "../../utils/TypeScript";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../store";
-import { createCategory, getCategory } from "../../slices/categorySlice";
+import {
+  createCategory,
+  deleteCategory,
+  getCategory,
+  updateCategory,
+} from "../../slices/categorySlice";
 import { startLoading, stopLoading } from "../../slices/globalSlice";
 import Layout from "../../components/Layout";
 import "./category.css";
@@ -14,6 +18,8 @@ export interface IUserLogin {
 }
 const Category = () => {
   const [name, setName] = useState("");
+  const [edit, setEdit] = useState<ICategory | null>(null);
+  console.log({ name, edit });
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(startLoading());
@@ -22,14 +28,37 @@ const Category = () => {
     });
   }, [dispatch]);
 
+  useEffect(() => {
+    if (edit) setName(edit.name);
+  }, [edit]);
+
   const { categories } = useSelector((state: RootState) => state.category);
 
   const submitHandler = (e: IFormEvent) => {
     e.preventDefault();
+
+    if (edit) {
+      if (edit?.name === name) return;
+
+      dispatch(startLoading());
+      dispatch(updateCategory({ _id: edit._id, name })).then(() => {
+        dispatch(stopLoading());
+        setName("");
+        setEdit(null);
+      });
+    } else {
+      dispatch(startLoading());
+      dispatch(createCategory(name)).then(() => {
+        dispatch(stopLoading());
+        setName("");
+      });
+    }
+  };
+
+  const handleDelete = (id: string) => {
     dispatch(startLoading());
-    dispatch(createCategory(name)).then(() => {
+    dispatch(deleteCategory(id)).then(() => {
       dispatch(stopLoading());
-      setName("");
     });
   };
   return (
@@ -38,7 +67,10 @@ const Category = () => {
         <form onSubmit={submitHandler}>
           <label htmlFor="category">Category</label>
 
-          <div className="d-flex">
+          <div className="d-flex align-items-center">
+            {edit && (
+              <i onClick={() => setEdit(null)} className="fas fa-times me-2" />
+            )}
             <input
               type="text"
               name="category"
@@ -47,21 +79,27 @@ const Category = () => {
               onChange={(e) => setName(e.target.value)}
             />
 
-            <button type="submit">Create</button>
+            <button type="submit">{edit === null ? "Create" : "Update"}</button>
           </div>
         </form>
 
         <div>
           {categories !== null &&
-            categories.map((category: any) => (
+            categories.map((category: ICategory) => (
               <div className="category_row" key={category._id}>
                 <p className="m-0 text-capitalize" key={category._id}>
                   {category.name}
                 </p>
 
                 <div>
-                  <i className="fas fa-edit mx-2" />
-                  <i className="fas fa-trash-alt" />
+                  <i
+                    onClick={() => setEdit(category)}
+                    className="fas fa-edit mx-2 text-warning"
+                  />
+                  <i
+                    onClick={() => handleDelete(category._id)}
+                    className="fas fa-trash-alt text-danger"
+                  />
                 </div>
               </div>
             ))}

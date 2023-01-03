@@ -26,9 +26,9 @@ export const createCategory = async (req: IReqAuth, res: Response) => {
     let errMsg;
     if (error.code === 11000) {
       errMsg = "This Category Is Already Exists! 😕";
-      return res.status(500).json({ err: errMsg });
+      return res.status(500).json({ msg: errMsg });
     }
-    return res.status(500).json({ err: error.message });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
@@ -50,13 +50,10 @@ export const updateCategory = async (req: IReqAuth, res: Response) => {
 
     const name = req.body.name.toLowerCase();
 
-    await Category.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: req.body.name,
-      },
-      { new: true }
-    );
+    await Category.findByIdAndUpdate(req.params.id, {
+      name,
+    });
+
     const categories = await Category.find().sort("-createdAt");
 
     res.json({ msg: "Update Success ✔", categories });
@@ -64,9 +61,9 @@ export const updateCategory = async (req: IReqAuth, res: Response) => {
     let errMsg;
     if (error.code === 11000) {
       errMsg = "This Category Is Already Exists! 😕";
-      return res.status(500).json({ err: errMsg });
+      return res.status(500).json({ msg: errMsg });
     }
-    return res.status(500).json({ err: error.message });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
@@ -76,6 +73,6 @@ export const deleteCategory = async (req: IReqAuth, res: Response) => {
     const categories = await Category.find().sort("-createdAt");
     res.json({ msg: "Delete Success! 🗑", categories });
   } catch (error: any) {
-    return res.status(500).json({ err: error.message });
+    return res.status(500).json({ msg: error.message });
   }
 };

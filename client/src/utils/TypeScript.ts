@@ -15,3 +15,11 @@ export interface IUserInfo {
   cfPassword: string;
   avatar: string | File;
 }
+
+export interface ICategory {
+  createdAt?: string;
+  name: string;
+  updatedAt?: string;
+  __v?: number;
+  _id: string;
+}
