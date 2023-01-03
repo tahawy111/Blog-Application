@@ -18,7 +18,10 @@ export const createCategory = async (req: IReqAuth, res: Response) => {
     const newCat = new Category({ name });
 
     await newCat.save();
-    res.status(201).json({ newCat });
+
+    const categories = await Category.find().sort("-createdAt");
+
+    res.status(201).json({ msg: "Category Created ✔", categories });
   } catch (error: any) {
     let errMsg;
     if (error.code === 11000) {
@@ -47,14 +50,16 @@ export const updateCategory = async (req: IReqAuth, res: Response) => {
 
     const name = req.body.name.toLowerCase();
 
-    const category = await Category.findByIdAndUpdate(
+    await Category.findByIdAndUpdate(
       req.params.id,
       {
         name: req.body.name,
       },
       { new: true }
     );
-    res.json({ msg: "Update Success ✔", category });
+    const categories = await Category.find().sort("-createdAt");
+
+    res.json({ msg: "Update Success ✔", categories });
   } catch (error: any) {
     let errMsg;
     if (error.code === 11000) {
@@ -67,8 +72,9 @@ export const updateCategory = async (req: IReqAuth, res: Response) => {
 
 export const deleteCategory = async (req: IReqAuth, res: Response) => {
   try {
-    const category = await Category.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Delete Success! 🗑", category });
+    await Category.findByIdAndDelete(req.params.id);
+    const categories = await Category.find().sort("-createdAt");
+    res.json({ msg: "Delete Success! 🗑", categories });
   } catch (error: any) {
     return res.status(500).json({ err: error.message });
   }
