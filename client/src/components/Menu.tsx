@@ -14,7 +14,7 @@ const Menu = () => {
   ];
   const afLoginLinks = [
     { label: "Home", path: "/" },
-    { label: "Create Blog", path: "/createblog" },
+    { label: "Create Blog", path: "/create_blog" },
   ];
   const loginLinks = auth.user ? afLoginLinks : bfLoginLinks;
   return (

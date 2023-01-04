@@ -14,6 +14,7 @@ import { useJwt } from "react-jwt";
 import { logout } from "./slices/authSlice";
 import { useEffect } from "react";
 import Category from "./pages/category/Category";
+import CreateBlog from "./pages/createBlog/CreateBlog";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -68,6 +69,10 @@ function App() {
         <Route
           path="category"
           element={auth.user ? <Category /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="create_blog"
+          element={auth.user ? <CreateBlog /> : <Navigate to="/login" />}
         />
       </Route>
       <Route path="*" element={<NotFound />} />
