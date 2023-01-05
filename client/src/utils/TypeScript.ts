@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent } from "react";
+import { IUser } from "./../../../server/src/config/interface";
 
-export type InputChange = ChangeEvent<HTMLInputElement>;
+export type InputChange = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 export type IFormEvent = FormEvent<HTMLFormElement>;
 
 export interface IFacebookLoginPayload {
@@ -22,4 +23,14 @@ export interface ICategory {
   updatedAt?: string;
   __v?: number;
   _id: string;
+}
+
+export interface ICreateBlogProps {
+  user: string | IUser;
+  title: string;
+  content: string;
+  description: string;
+  thumbnail: string | File;
+  category: string;
+  createdAt: string;
 }

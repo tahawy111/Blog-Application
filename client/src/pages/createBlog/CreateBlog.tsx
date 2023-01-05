@@ -1,5 +1,8 @@
 import { useState } from "react";
 import Layout from "../../components/Layout";
+import { ICreateBlogProps } from "../../utils/TypeScript";
+import CardHoriz from "./../../components/CardHoriz";
+import CreateForm from "./../../components/CreateForm";
 
 const CreateBlog = () => {
   const initialState = {
@@ -12,7 +15,7 @@ const CreateBlog = () => {
     createdAt: new Date().toISOString(),
   };
 
-  const [blog, setBlog] = useState(initialState);
+  const [blog, setBlog] = useState<ICreateBlogProps>(initialState);
 
   return (
     <Layout>
@@ -22,8 +25,12 @@ const CreateBlog = () => {
         <div className="row mt-4">
           <div className="col-md-6">
             <h5>Create</h5>
+            <CreateForm blog={blog} setBlog={setBlog} />
           </div>
-          <div className="col-md-6"></div>
+          <div className="col-md-6">
+            <h5>Preview</h5>
+            <CardHoriz />
+          </div>
         </div>
       </div>
     </Layout>
