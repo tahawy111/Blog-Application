@@ -8,6 +8,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import "bootstrap/dist/css/bootstrap.min.css";
+import "react-quill/dist/quill.snow.css";
 import "react-alert-confirm/lib/style.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 

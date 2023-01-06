@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Nav, NavDropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
@@ -7,6 +7,7 @@ import { logout } from "../slices/authSlice";
 
 const Menu = () => {
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
   const auth = useSelector((state: RootState) => state.auth);
   const bfLoginLinks = [
     { label: "Register", path: "/register" },
@@ -47,15 +48,17 @@ const Menu = () => {
             }
             id="basic-nav-dropdown"
           >
-            <NavDropdown.Item>
-              <Link to="/profile">Profile</Link>
-            </NavDropdown.Item>
+            <Link
+              to="/profile"
+              onClick={() => navigate("/profile")}
+              className="w-100"
+            >
+              <NavDropdown.Item className="w-100">Profile</NavDropdown.Item>
+            </Link>
             <NavDropdown.Divider />
-            <NavDropdown.Item>
-              <Link to="" onClick={() => dispatch(logout())}>
-                Logout
-              </Link>
-            </NavDropdown.Item>
+            <Link to="" onClick={() => dispatch(logout())}>
+              <NavDropdown.Item>Logout</NavDropdown.Item>
+            </Link>
           </NavDropdown>
         ) : (
           ""

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { TextField, Autocomplete } from "@mui/material";
 import { ICategory, ICreateBlogProps, InputChange } from "../utils/TypeScript";
-import { getCategory } from "../slices/categorySlice";
 
 interface Props {
   blog: ICreateBlogProps;

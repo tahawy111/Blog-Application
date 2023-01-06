@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { getCategory } from "../../slices/categorySlice";
 import { startLoading, stopLoading } from "../../slices/globalSlice";
+import Quill from "../../components/Quill";
 
-const CreateBlog: React.FC = () => {
+const CreateBlog = () => {
   const initialState = {
     user: "",
     title: "",
@@ -23,6 +24,7 @@ const CreateBlog: React.FC = () => {
   const category = useSelector((state: RootState) => state.category);
 
   const [blog, setBlog] = useState<ICreateBlogProps>(initialState);
+  const [body, setBody] = useState<string>("");
 
   return (
     <Layout>
@@ -39,6 +41,7 @@ const CreateBlog: React.FC = () => {
             <CardHoriz blog={blog} />
           </div>
         </div>
+        <Quill setBody={setBody} />
       </div>
     </Layout>
   );
