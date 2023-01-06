@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import { ICreateBlogProps } from "../../utils/TypeScript";
 import CardHoriz from "./../../components/CardHoriz";
 import CreateForm from "./../../components/CreateForm";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+import { getCategory } from "../../slices/categorySlice";
+import { startLoading, stopLoading } from "../../slices/globalSlice";
 
-const CreateBlog = () => {
+const CreateBlog: React.FC = () => {
   const initialState = {
     user: "",
     title: "",
@@ -14,6 +18,9 @@ const CreateBlog = () => {
     category: "",
     createdAt: new Date().toISOString(),
   };
+  const dispatch = useDispatch<AppDispatch>();
+
+  const category = useSelector((state: RootState) => state.category);
 
   const [blog, setBlog] = useState<ICreateBlogProps>(initialState);
 
@@ -29,7 +36,7 @@ const CreateBlog = () => {
           </div>
           <div className="col-md-6">
             <h5>Preview</h5>
-            <CardHoriz />
+            <CardHoriz blog={blog} />
           </div>
         </div>
       </div>

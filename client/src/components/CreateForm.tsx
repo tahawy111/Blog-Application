@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
 import { TextField, Autocomplete } from "@mui/material";
 import { ICategory, ICreateBlogProps, InputChange } from "../utils/TypeScript";
+import { getCategory } from "../slices/categorySlice";
 
 interface Props {
   blog: ICreateBlogProps;
@@ -20,6 +21,7 @@ const CreateForm: React.FC<Props> = ({ blog, setBlog }) => {
       )
       .join(" ");
   };
+  const dispatch = useDispatch<AppDispatch>();
   const handleChangeInput = (e: InputChange) => {
     const target = e.target as HTMLInputElement;
     if (target.type === "file") {
@@ -36,9 +38,12 @@ const CreateForm: React.FC<Props> = ({ blog, setBlog }) => {
     }
   };
 
-  const selectArr = category?.categories.map((cat: ICategory) => {
-    return { label: capitalize(cat.name), value: cat };
-  });
+  const selectArr =
+    category.categories === null
+      ? []
+      : category?.categories.map((cat: ICategory) => {
+          return { label: capitalize(cat.name), value: cat };
+        });
   return (
     <form>
       <div className="form-group position-relative">
@@ -55,7 +60,7 @@ const CreateForm: React.FC<Props> = ({ blog, setBlog }) => {
           className="text-muted position-absolute"
           style={{ bottom: 0, right: 3 }}
         >
-          0/50
+          {blog.title.length}/50
         </small>
       </div>
       <div className="form-group position-relative my-3">
@@ -71,7 +76,7 @@ const CreateForm: React.FC<Props> = ({ blog, setBlog }) => {
         <textarea
           className="form-control"
           style={{ resize: "none" }}
-          maxLength={50}
+          maxLength={200}
           name="description"
           value={blog.description}
           onChange={handleChangeInput}
@@ -81,23 +86,29 @@ const CreateForm: React.FC<Props> = ({ blog, setBlog }) => {
           className="text-muted position-absolute"
           style={{ bottom: 0, right: 3 }}
         >
-          0/200
+          {blog.description.length}/200
         </small>
       </div>
 
       <div className="form-group position-relative">
-        <Autocomplete
-          disablePortal
-          options={selectArr}
-          isOptionEqualToValue={(option: any, value: any) =>
-            option.iso === value.iso
-          }
-          sx={{ width: "100%" }}
-          onChange={(_, newValue: any) =>
-            setBlog({ ...blog, category: newValue?.value })
-          }
-          renderInput={(params) => <TextField {...params} label="Categories" />}
-        />
+        {category.categories === null ? (
+          "Loading Categories"
+        ) : (
+          <Autocomplete
+            disablePortal
+            options={selectArr}
+            isOptionEqualToValue={(option: any, value: any) =>
+              option.iso === value.iso
+            }
+            sx={{ width: "100%" }}
+            onChange={(_, newValue: any) =>
+              setBlog({ ...blog, category: newValue?.value })
+            }
+            renderInput={(params) => (
+              <TextField {...params} label="Categories" />
+            )}
+          />
+        )}
         {/* <small
           className="text-muted position-absolute"
           style={{ bottom: 0, right: 3 }}

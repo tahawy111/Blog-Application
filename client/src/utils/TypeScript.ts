@@ -30,7 +30,7 @@ export interface ICreateBlogProps {
   title: string;
   content: string;
   description: string;
-  thumbnail: string | File;
+  thumbnail: any;
   category: string;
   createdAt: string;
 }
