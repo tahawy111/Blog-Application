@@ -12,6 +12,7 @@ import { Button } from "react-bootstrap";
 import { validCreateBlog } from "./../../utils/valid";
 import { toast } from "react-toastify";
 import { imageUpload } from "../../utils/imageUpload";
+import { createBlog } from "./../../slices/blogSlice";
 
 const CreateBlog = () => {
   const initialState = {
@@ -58,9 +59,8 @@ const CreateBlog = () => {
       content: body,
     };
 
-    console.log(newBlog);
-
     // Dispatch
+    dispatch(createBlog(newBlog));
   };
 
   return (
@@ -81,6 +81,7 @@ const CreateBlog = () => {
         <Quill setBody={setBody} />
 
         <div
+          className="mt-3"
           ref={divRef}
           dangerouslySetInnerHTML={{
             __html: body,

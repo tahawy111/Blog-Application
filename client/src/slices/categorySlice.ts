@@ -92,14 +92,14 @@ export interface CategoryState {
 
 const initialState: CategoryState = {
   loading: false,
-  isSuccess: localStorage.user ? true : false,
+  isSuccess: false,
   isError: false,
   message: "",
   categories: null,
 };
 
 export const categorySlice = createSlice({
-  name: "auth",
+  name: "category",
   initialState,
   reducers: {
     reset: (state) => {
