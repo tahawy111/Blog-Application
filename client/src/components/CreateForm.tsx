@@ -11,7 +11,6 @@ interface Props {
 
 const CreateForm: React.FC<Props> = ({ blog, setBlog }) => {
   const { category } = useSelector((state: RootState) => state);
-  console.log(blog);
   const capitalize = (str: string) => {
     return str
       .split(" ")

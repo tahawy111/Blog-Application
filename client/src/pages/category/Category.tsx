@@ -19,7 +19,6 @@ export interface IUserLogin {
 const Category = () => {
   const [name, setName] = useState("");
   const [edit, setEdit] = useState<ICategory | null>(null);
-  console.log({ name, edit });
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     dispatch(startLoading());
