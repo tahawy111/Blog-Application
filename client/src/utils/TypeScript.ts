@@ -34,3 +34,30 @@ export interface ICreateBlogProps {
   category: string;
   createdAt: string;
 }
+export interface IUserData {
+  _id: string;
+  name: string;
+  account: string;
+  avatar: string;
+  role: string;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface IBlogs {
+  _id: string;
+  user: IUserData;
+  title: string;
+  content: string;
+  thumbnail: string;
+  category: ICategory;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
+}
+export interface IBlog {
+  _id: string;
+  name: string;
+  count: number;
+  blogs: IBlogs[];
+}
