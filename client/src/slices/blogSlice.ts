@@ -24,6 +24,26 @@ export const createBlog = createAsyncThunk(
   }
 );
 
+export const getBlogs = createAsyncThunk(
+  "blog/getBlogs",
+  async (_, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.get("/blog")
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export interface BlogState {
   loading: boolean;
   isSuccess: boolean;
@@ -71,6 +91,30 @@ export const blogSlice = createSlice({
     });
     builder.addCase(
       createBlog.rejected,
+      (state: BlogState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: false,
+          message: action.payload,
+        };
+      }
+    );
+    builder.addCase(getBlogs.pending, (state: BlogState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(getBlogs.fulfilled, (state: BlogState, action: any) => {
+      toast.success(`${action.payload.msg}`);
+      return {
+        ...state,
+        loading: false,
+        isSuccess: true,
+        blogs: action.payload.blogs,
+      };
+    });
+    builder.addCase(
+      getBlogs.rejected,
       (state: BlogState, action: PayloadAction) => {
         toast.error(`${action.payload}`);
         return {

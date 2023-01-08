@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./slices/authSlice";
+import blogSlice from "./slices/blogSlice";
 import categorySlice from "./slices/categorySlice";
 import globalSlice from "./slices/globalSlice";
 
@@ -8,6 +9,7 @@ export const store = configureStore({
     auth: authSlice,
     global: globalSlice,
     category: categorySlice,
+    blog: blogSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

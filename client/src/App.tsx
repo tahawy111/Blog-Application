@@ -16,11 +16,12 @@ import { useEffect } from "react";
 import Category from "./pages/category/Category";
 import CreateBlog from "./pages/createBlog/CreateBlog";
 import { getCategory } from "./slices/categorySlice";
+import { getBlogs } from "./slices/blogSlice";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
-  const state = useSelector((state: RootState) => state);
+  // const state = useSelector((state: RootState) => state);
   // gapi.load("client:auth2", () => {
   //   gapi.client.init({
   //     clientId: `${process.env.REACT_APP_GOOGLE_CLIENT_ID}`,
@@ -38,6 +39,7 @@ function App() {
     }
   }, [isExpired]);
   useEffect(() => {
+    dispatch(getBlogs());
     dispatch(getCategory());
   }, [dispatch]);
 
