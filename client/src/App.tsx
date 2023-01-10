@@ -17,6 +17,7 @@ import Category from "./pages/category/Category";
 import CreateBlog from "./pages/createBlog/CreateBlog";
 import { getCategory } from "./slices/categorySlice";
 import { getBlogs } from "./slices/blogSlice";
+import BlogsByCategory from "./pages/blogs/BlogsByCategory";
 
 function App() {
   const dispatch: AppDispatch = useDispatch();
@@ -37,7 +38,7 @@ function App() {
     if (auth.user !== null && isExpired) {
       dispatch(logout());
     }
-  }, [isExpired]);
+  }, [isExpired, dispatch, auth.user]);
   useEffect(() => {
     dispatch(getBlogs());
     dispatch(getCategory());
@@ -77,9 +78,14 @@ function App() {
           path="category"
           element={auth.user ? <Category /> : <Navigate to="/login" />}
         />
+        {/* Blogs */}
         <Route
           path="create_blog"
           element={auth.user ? <CreateBlog /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="blogs/:category"
+          element={auth.user ? <BlogsByCategory /> : <Navigate to="/login" />}
         />
       </Route>
       <Route path="*" element={<NotFound />} />
