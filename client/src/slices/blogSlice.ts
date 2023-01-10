@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import axiosIntance from "../utils/axios";
 import { toast } from "react-toastify";
 import { ICreateBlogProps } from "../utils/TypeScript";
+import { IBlog } from "./../utils/TypeScript";
 
 export const createBlog = createAsyncThunk(
   "blog/create",
@@ -49,7 +50,7 @@ export interface BlogState {
   isSuccess: boolean;
   isError: boolean;
   message: string;
-  blogs: null | object[];
+  blogs: null | IBlog[];
 }
 
 const initialState: BlogState = {
@@ -105,7 +106,6 @@ export const blogSlice = createSlice({
       return { ...state, loading: true };
     });
     builder.addCase(getBlogs.fulfilled, (state: BlogState, action: any) => {
-      toast.success(`${action.payload.msg}`);
       return {
         ...state,
         loading: false,

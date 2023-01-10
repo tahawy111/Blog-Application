@@ -29,7 +29,7 @@ const CardHoriz: React.FC<Props> = ({ blog }) => {
             <p className="card-text">{blog.description}</p>
             <p className="card-text">
               <small className="text-muted">
-                {new Date(blog.createdAt).toLocaleString("en-JM")}
+                {new Date(blog.createdAt).toLocaleString("en-CA")}
               </small>
             </p>
           </div>

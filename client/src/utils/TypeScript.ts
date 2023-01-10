@@ -50,6 +50,7 @@ export interface IBlogs {
   title: string;
   content: string;
   thumbnail: string;
+  description: string;
   category: ICategory;
   createdAt: string;
   updatedAt: string;
@@ -59,5 +60,5 @@ export interface IBlog {
   _id: string;
   name: string;
   count: number;
-  blogs: IBlogs[];
+  blogs: [];
 }
