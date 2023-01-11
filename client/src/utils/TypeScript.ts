@@ -60,5 +60,5 @@ export interface IBlog {
   _id: string;
   name: string;
   count: number;
-  blogs: [];
+  blogs: IBlogs[];
 }

@@ -2,8 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axiosIntance from "../utils/axios";
 import { toast } from "react-toastify";
-import { ICreateBlogProps } from "../utils/TypeScript";
-import { IBlog } from "./../utils/TypeScript";
+import { IBlog, IBlogs, ICreateBlogProps } from "../utils/TypeScript";
 
 export const createBlog = createAsyncThunk(
   "blog/create",
@@ -45,12 +44,37 @@ export const getBlogs = createAsyncThunk(
   }
 );
 
+export const getBlogsByCategoryId = createAsyncThunk(
+  "blog/getBlogsByCategoryId",
+  async (catId: string, thunkAPI) => {
+    try {
+      return thunkAPI.fulfillWithValue(
+        await (
+          await axiosIntance.get(`/blog/${catId}`)
+        ).data
+      );
+    } catch (error: any) {
+      const message =
+        (error.response && error.response.data && error.response.data.msg) ||
+        error.msg ||
+        error.toString();
+
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export interface BlogState {
   loading: boolean;
   isSuccess: boolean;
   isError: boolean;
   message: string;
   blogs: null | IBlog[];
+  blogsByCat: null | {
+    blogs: IBlogs[];
+    total: number;
+    count: number;
+  };
 }
 
 const initialState: BlogState = {
@@ -59,6 +83,7 @@ const initialState: BlogState = {
   isError: false,
   message: "",
   blogs: null,
+  blogsByCat: null,
 };
 
 export const blogSlice = createSlice({
@@ -73,6 +98,7 @@ export const blogSlice = createSlice({
         isError: false,
         message: "",
         blogs: null,
+        blogsByCat: null,
       };
     },
   },
@@ -115,6 +141,37 @@ export const blogSlice = createSlice({
     });
     builder.addCase(
       getBlogs.rejected,
+      (state: BlogState, action: PayloadAction) => {
+        toast.error(`${action.payload}`);
+        return {
+          ...state,
+          loading: false,
+          isSuccess: false,
+          message: action.payload,
+        };
+      }
+    );
+    builder.addCase(getBlogsByCategoryId.pending, (state: BlogState) => {
+      return { ...state, loading: true };
+    });
+    builder.addCase(
+      getBlogsByCategoryId.fulfilled,
+      (state: BlogState, action: any) => {
+        return {
+          ...state,
+          loading: false,
+          isSuccess: true,
+          blogsByCat: {
+            ...state.blogsByCat,
+            blogs: action.payload.blogs,
+            total: action.payload.total,
+            count: action.payload.count,
+          },
+        };
+      }
+    );
+    builder.addCase(
+      getBlogsByCategoryId.rejected,
       (state: BlogState, action: PayloadAction) => {
         toast.error(`${action.payload}`);
         return {

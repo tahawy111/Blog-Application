@@ -21,7 +21,9 @@ const CardVert: React.FC<Props> = ({ blog }) => {
         </Card.Title>
         <Card.Text>{blog.description.slice(0, 100) + "..."}</Card.Text>
         <small className="text-muted">
-          <Link to={`/profile/${blog.user._id}`}>By: {blog.user._id}</Link>
+          <Link to={`/profile/${blog.user._id}`} className="text-capitalize">
+            By: {blog.user.name}
+          </Link>
         </small>
         <br />
         <small className="text-muted">
