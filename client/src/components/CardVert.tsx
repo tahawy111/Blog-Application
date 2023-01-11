@@ -17,7 +17,7 @@ const CardVert: React.FC<Props> = ({ blog }) => {
       />
       <Card.Body>
         <Card.Title>
-          <Link to={`/blog/${blog._id}`}></Link>
+          <Link to={`/blog/${blog._id}`}>{blog.title.slice(0, 20)}</Link>
         </Card.Title>
         <Card.Text>{blog.description.slice(0, 100) + "..."}</Card.Text>
         <small className="text-muted">
