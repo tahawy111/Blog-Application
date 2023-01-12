@@ -56,7 +56,7 @@ const Pagination = (
   req: IReqAuth
 ): { page: number; limit: number; skip: number } => {
   let page = Number(req.query.page) * 1 || 1;
-  let limit = Number(req.query.limit) * 1 || 4;
+  let limit = Number(req.query.limit) * 1 || 2;
   let skip = (page - 1) * limit;
 
   return { page, limit, skip };
@@ -173,10 +173,10 @@ export const getBlogsByCategory = async (req: IReqAuth, res: Response) => {
     const count = Data[0].count;
     let total: number = 0;
 
-    if (total % limit === 0) {
+    if (count % limit === 0) {
       total = count / limit;
     } else {
-      total = Math.floor(total / limit) + 1;
+      total = Math.floor(count / limit) + 1;
     }
     res.json({ blogs: Data[0].totalData, count, total });
   } catch (error: any) {

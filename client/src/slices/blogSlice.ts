@@ -46,11 +46,18 @@ export const getBlogs = createAsyncThunk(
 
 export const getBlogsByCategoryId = createAsyncThunk(
   "blog/getBlogsByCategoryId",
-  async (catId: string, thunkAPI) => {
+  async (
+    obj: { catId: string; page?: number | 1; limit?: number },
+    thunkAPI
+  ) => {
     try {
       return thunkAPI.fulfillWithValue(
         await (
-          await axiosIntance.get(`/blog/${catId}`)
+          await axiosIntance.get(
+            `/blog/${obj.catId}?page=${obj.page}${
+              obj.limit ? `&limit=${obj.limit}` : ""
+            }`
+          )
         ).data
       );
     } catch (error: any) {
