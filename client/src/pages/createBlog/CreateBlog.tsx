@@ -60,7 +60,10 @@ const CreateBlog = () => {
     };
 
     // Dispatch
-    dispatch(createBlog(newBlog));
+    dispatch(startLoading());
+    dispatch(createBlog(newBlog)).then(() => {
+      dispatch(stopLoading());
+    });
   };
 
   return (

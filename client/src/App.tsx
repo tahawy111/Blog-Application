@@ -31,14 +31,11 @@ function App() {
   // });
 
   const { isExpired } = useJwt(auth.user?.access_token);
-
-  console.log({ isExpired, isSuccess: auth.isSuccess });
-
   useEffect(() => {
     if (auth.user !== null && isExpired) {
       dispatch(logout());
     }
-  }, [isExpired, dispatch, auth.user]);
+  }, [isExpired, dispatch]);
   useEffect(() => {
     dispatch(getBlogs());
     dispatch(getCategory());
@@ -47,10 +44,7 @@ function App() {
   return (
     <Routes>
       <Route path="/">
-        <Route
-          index
-          element={auth.user ? <Home /> : <Navigate to="/login" />}
-        />
+        <Route index element={<Home />} />
         {/* Start Auth Routes */}
         <Route
           path="login"
@@ -65,10 +59,7 @@ function App() {
           element={auth.user ? <Navigate to="/" /> : <Active />}
         />
         {/* End Auth Routes */}
-        <Route
-          path="profile"
-          element={auth.user ? <Profile /> : <Navigate to="/login" />}
-        />
+        <Route path="profile/:id" element={<Profile />} />
         <Route
           path="changeEmail/:token"
           element={auth.user ? <ChangeEmail /> : <Navigate to="/login" />}
@@ -83,10 +74,7 @@ function App() {
           path="create_blog"
           element={auth.user ? <CreateBlog /> : <Navigate to="/login" />}
         />
-        <Route
-          path="blogs/:category"
-          element={auth.user ? <BlogsByCategory /> : <Navigate to="/login" />}
-        />
+        <Route path="blogs/:category" element={<BlogsByCategory />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -49,8 +49,8 @@ const Menu = () => {
             id="basic-nav-dropdown"
           >
             <Link
-              to="/profile"
-              onClick={() => navigate("/profile")}
+              to={`/profile/${auth?.user?.user._id}`}
+              onClick={() => navigate(`/profile/${auth?.user?.user._id}`)}
               className="w-100"
             >
               <NavDropdown.Item className="w-100">Profile</NavDropdown.Item>

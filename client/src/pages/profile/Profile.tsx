@@ -5,20 +5,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
 import UserInfo from "../../components/UserInfo";
 import UserBlogs from "../../components/UserBlogs";
+import { useParams } from "react-router-dom";
+import OtherInfo from "./../../components/OtherInfo";
 
 const Profile = () => {
   const auth = useSelector((state: RootState) => state.auth);
+  const slug: any = useParams();
   const dispatch: AppDispatch = useDispatch();
-  const user = auth?.user.user;
   return (
     <Layout>
-      {/* <div className="row my-3 ">
-        <div className="col-md-5 mb-3">{user?._id}</div>
-        <div className="row md-7"></div>
-      </div> */}
       <Row className="my-3">
         <Col md={5} className="mb-3">
-          <UserInfo />
+          {auth?.user?.user !== null && auth?.user?.user?._id !== slug?.id ? (
+            <OtherInfo id={slug?.id} />
+          ) : (
+            <UserInfo />
+          )}
         </Col>
         <Col md={7} className="mb-3">
           <UserBlogs />

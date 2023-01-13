@@ -137,6 +137,16 @@ export const resetPassword = async (req: IReqAuth, res: Response) => {
   }
 };
 
+export const getUser = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.params?.id).select("-password");
+
+    res.json({ user });
+  } catch (error: any) {
+    return res.status(400).json({ msg: error.message });
+  }
+};
+
 // Test
 export const test = async (req: Request, res: Response) => {
   try {

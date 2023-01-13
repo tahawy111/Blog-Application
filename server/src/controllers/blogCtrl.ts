@@ -56,7 +56,7 @@ const Pagination = (
   req: IReqAuth
 ): { page: number; limit: number; skip: number } => {
   let page = Number(req.query.page) * 1 || 1;
-  let limit = Number(req.query.limit) * 1 || 2;
+  let limit = Number(req.query.limit) * 1 || 4;
   let skip = (page - 1) * limit;
 
   return { page, limit, skip };
